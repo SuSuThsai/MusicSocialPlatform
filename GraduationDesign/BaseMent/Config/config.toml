@@ -15,7 +15,7 @@
     DBModel = 
 #Jwtk
 [JwtK]
-    JwtKey = "253157896"
+    JwtKey = ""
 
 #Jwtk
 [SetModel]
