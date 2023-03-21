@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package result;
+option go_package = "BaseMent/Grpc;Grpc";
+
+service FileTransfer {
+  // The client sends a file data and an identifier to the server
+  // The server returns a string array and an identifier to the client
+  rpc TransferFile(stream FileRequest) returns (FileResponse);
+}
+
+// The request message containing the file data and an identifier
+message FileRequest {
+  // A chunk of data from the file
+  bytes data = 1;
+  // An identifier indicating the type of the file
+  string type = 2;
+}
+
+// The response message containing the string array and an identifier
+message FileResponse {
+  // A string array from the server
+  repeated string strings = 1;
+  // An identifier indicating the type of the file
+  string type = 2;
+}

@@ -1,0 +1,17 @@
+#etcd服务发现
+[etcd]
+    nodes =[]
+
+#Kafka
+[kafka.MsgChat]
+    topic = "IM-PushMsg"
+    group = "IM-PushMsg-Group"
+    brokers = ["43.139.123.205:9095"]
+[kafka.MsgAudio]
+    topic = "IM-PushAudio"
+    group = "IM-PushAudio-Group"
+    brokers = ["43.139.123.205:9095"]
+[kafka.MsgSql]
+    topic = "Redis-PushSql"
+    group = "Redis-PushSql-Group"
+    brokers = ["43.139.123.205:9095"]
