@@ -59,6 +59,15 @@ func UpLoadBackGround(file *multipart.FileHeader, userId string) (string, bool) 
 	return url, code
 }
 
+func UpLoadMusicListImg(file *multipart.FileHeader, lisId string) (string, bool) {
+	f, _ := file.Open()
+	defer f.Close()
+	xxx := file.Header["Content-Type"][0][6:]
+	filename := "YamadaUsers/" + lisId + "/MusicList/" + lisId + "_musicList" + xxx
+	url, code := Upload(filename, f)
+	return url, code
+}
+
 func Delete(userId string, code int) bool {
 	_, data, _, _, _ := Model.GetUser(userId)
 	var url []string

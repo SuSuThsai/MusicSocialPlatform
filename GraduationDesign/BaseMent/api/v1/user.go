@@ -71,11 +71,9 @@ func EditUserFace(c *gin.Context) {
 }
 
 func EditUserBKGD(c *gin.Context) {
-	var data Model.User
-	userid := c.PostForm("user_id")
-	data.UserId = userid
+	userid := c.GetString("user_id")
 	backGroundFile, _ := c.FormFile("backGroundFile")
-	code := Model.CheckUpUser(data.UserId)
+	code := Model.CheckUpUser(userid)
 	if code == utils.SUCCESS {
 		code = utils.CheckPictureBackgroundIsValidate(backGroundFile)
 	}
@@ -86,8 +84,35 @@ func EditUserBKGD(c *gin.Context) {
 		})
 		return
 	}
-	backgroundUrl, _ := CosCloud.UpLoadBackGround(backGroundFile, data.UserId)
-	code = Model.EditUserBKGD(data.UserId, backgroundUrl)
+	backgroundUrl, _ := CosCloud.UpLoadBackGround(backGroundFile, userid)
+	code = Model.EditUserBKGD(userid, backgroundUrl)
+	if code == http.StatusOK {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"message": utils.GetErrMsg(code),
+		})
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"status":  code,
+		"message": utils.GetErrMsg(code),
+	})
+}
+
+func EditUserMusicListImg(c *gin.Context) {
+	listId := c.PostForm("list_id")
+	backGroundFile, _ := c.FormFile("File")
+	code := utils.CheckPictureBackgroundIsValidate(backGroundFile)
+	if code != utils.SUCCESS {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"status":  code,
+			"message": utils.GetErrMsg(code),
+		})
+		return
+	}
+	backgroundUrl, _ := CosCloud.UpLoadMusicListImg(backGroundFile, listId)
+	listId2, _ := strconv.Atoi(listId)
+	code = Model.EditMusicListImg(uint(listId2), backgroundUrl)
 	if code == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,

@@ -284,6 +284,22 @@ func EditUserBKGD(id string, BKGD string) int {
 	return utils.SUCCESS
 }
 
+// EditMusicListImg Edit MusicList Img
+func EditMusicListImg(listId uint, img string) int {
+	var musicList MusicList
+	var maps = make(map[string]interface{})
+	Config.DB.Where("id = ?", listId).First(&musicList)
+	if err != nil || musicList.ID == 0 {
+		return utils.ERROR
+	}
+	maps["img"] = img
+	err = Config.DB.Model(&MusicList{}).Where("id = ?", musicList.ID).Updates(&maps).Error
+	if err != nil {
+		return utils.ERROR
+	}
+	return utils.SUCCESS
+}
+
 // EditUserName Edit UserName
 func EditUserName(id string, data *User) int {
 	var user User
