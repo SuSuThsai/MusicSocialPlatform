@@ -100,7 +100,7 @@ func EditUserBKGD(c *gin.Context) {
 }
 
 func EditUserMusicListImg(c *gin.Context) {
-	listId := c.PostForm("list_id")
+	listId := c.Param("id")
 	backGroundFile, _ := c.FormFile("File")
 	code := utils.CheckPictureBackgroundIsValidate(backGroundFile)
 	if code != utils.SUCCESS {
