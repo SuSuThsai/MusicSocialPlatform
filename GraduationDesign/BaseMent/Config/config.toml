@@ -1,18 +1,18 @@
 #postgresql
 [PostgreSQL]
-    TypeP = "postgres"
-    Host = "43.139.123.205"
-    Port = 5432
-    Dbuser = "root12"
-    DbPassWord = "root12"
-    DbName = "root12"
+    TypeP = ""
+    Host = ""
+    Port = 
+    Dbuser = ""
+    DbPassWord = ""
+    DbName = ""
 #redis
 [Redis]
-    HostR = "43.139.123.205"
-    PortR = 6379
-    #DbUserR = "root"
-    DbPassWordR = "root"
-    DBModel = 1
+    HostR = ""
+    PortR = 
+    #DbUserR = ""
+    DbPassWordR = ""
+    DBModel = 
 #Jwtk
 [JwtK]
     JwtKey = "253157896"
@@ -49,15 +49,15 @@
     CacheRankMusicDay = "musicDay_rank"
 
 [TencentCos]
-    Url = "https://yamada-bucket-1314757920.cos.ap-guangzhou.myqcloud.com"
-    SecretId = "AKIDLmASgkcLyWu9umaHm8LQPGxUpjVDmHdN"
-    SecretKey = "kdMxOemiSylOwPq8ybEjGiCxc7RbcVKC"
+    Url = ""
+    SecretId = ""
+    SecretKey = ""
 
 [SFtp]
-    User = "root"
-    Password = "cjk7588@"
-    Host = "43.139.123.205"
-    Port = "22"
+    User = ""
+    Password = ""
+    Host = ""
+    Port = ""
 
 [FileGrpc]
     Server = ["localhost:5051"]
