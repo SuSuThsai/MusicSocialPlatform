@@ -322,3 +322,17 @@ func GetUserMusicList(userId uint, pageSize int, pageNum int) ([]MusicList, int,
 	}
 	return musicList, utils.SUCCESS, total
 }
+
+// GetUserMusicListTips Get Use rMusicList Tips
+func GetUserMusicListTips(listId uint) ([]Tips, int, int64) {
+	var tips []Tips
+	var total int64
+	err = Config.DB.Where("list_id = ?",
+		listId).Find(&tips).Count(&total).Error
+	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Where("user_id = ?",
+	//	userId).Find(&musicList).Count(&total).Error
+	if err != nil {
+		return tips, utils.ERROR, 0
+	}
+	return tips, utils.SUCCESS, total
+}

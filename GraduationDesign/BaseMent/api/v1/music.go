@@ -519,6 +519,26 @@ func SearchMusicList(c *gin.Context) {
 	})
 }
 
+func GetUserMusicListTips(c *gin.Context) {
+	listId, _ := strconv.Atoi(c.Param("list_id"))
+	tips, code, total := Model.GetUserMusicListTips(uint(listId))
+	if code == utils.SUCCESS {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"data":    tips,
+			"total":   total,
+			"message": utils.GetErrMsg(code),
+		})
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"status":  code,
+		"data":    tips,
+		"total":   total,
+		"message": utils.GetErrMsg(code),
+	})
+}
+
 func GetUserMusicList(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
