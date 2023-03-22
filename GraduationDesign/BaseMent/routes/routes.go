@@ -38,12 +38,12 @@ func InitRoutes() {
 		Basement.GET(":user_id/music_list", v1.GetUserMusicList)
 		//search
 		//Basement.GET("searchAll", v1.SearchActivitiesAndComments)
-		Basement.GET("searchArticle/:title", v1.SearchActivities)
+		Basement.GET("searchArticle", v1.SearchActivities)
 		Basement.GET("GetArticles/days", v1.SearchArticleDays)
-		Basement.GET("searchMusic/:title", v1.SearchMusic)
-		Basement.GET("searchTopic/:title", v1.SearchTopics)
+		Basement.GET("searchMusic", v1.SearchMusic)
+		Basement.GET("searchTopic", v1.SearchTopics)
 		//Basement.GET("searchComment", v1.SearchComments)
-		Basement.GET("searchMusicList/:title", v1.SearchMusicList)
+		Basement.GET("searchMusicList", v1.SearchMusicList)
 		//article
 		Basement.GET("Article/:article_id", v1.CheckAArticle)
 		Basement.GET("GetaArticleCommentList/:article_id", v1.GetCommentListByArticleId)

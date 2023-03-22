@@ -280,9 +280,11 @@ func SearchActivities(title string, pageSize int, pageNum int) ([]Article, int, 
 
 // SearchArticleDays Search The activities
 func SearchArticleDays(title int, pageSize int, pageNum int) ([]Article, int, int64) {
+	startOfDay := time2.Now().AddDate(0, 0, -title).Truncate(24 * time2.Hour)
+	endOfDay := startOfDay.Add(24 * time2.Hour)
 	var articles []Article
 	var total int64
-	err = Config.DB.Order("created_at DESC").Where("created_at >= ?", time2.Now().AddDate(0, 0, -title)).Find(&articles).Count(&total).Error
+	err = Config.DB.Order("created_at DESC").Where("created_at BETWEEN ? AND ?", startOfDay, endOfDay).Find(&articles).Count(&total).Error
 	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Where("content LIKE ?",
 	//	"%"+title+"%").Find(&articles).Count(&total).Error
 	if err != nil {

@@ -418,8 +418,10 @@ func SearchArticleDays(c *gin.Context) {
 	//if pageNum == 0 {
 	//	pageNum = 1
 	//}
-	if title >= 7 {
-		title = 7
+	if title <= 0 {
+		title = 0
+	} else if title >= 7 {
+		title = 6
 	}
 	articles, code, total := Model.SearchArticleDays(title, pageSize, pageNum)
 	if code == utils.SUCCESS {

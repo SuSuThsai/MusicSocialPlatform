@@ -3,11 +3,13 @@ package v1
 import (
 	"GraduationDesign/BaseMent/Cloud/CosCloud"
 	"GraduationDesign/BaseMent/Model"
+	"GraduationDesign/BaseMent/Model/Cache"
 	"GraduationDesign/BaseMent/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func AddUser(c *gin.Context) {
@@ -394,8 +396,20 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 		for i := 0; i < len(a); i++ {
 			b = append(b, a[i].Habits)
 		}
-		musics, _ := Model.SearchMusicsProfessional(b)
-		code = Model.CountCommandMusic(musics, userId)
+		if len(b) == 0 {
+			musics1, code, _ := Cache.GetACacheMusicRankWeek()
+			if code == utils.ERROR || len(musics1) <= 2 {
+				y, w1 := time.Now().ISOWeek()
+				m := utils.GetCNTimeMonth(time.Now().Month().String())
+				musics1, code, _ = Model.GetMusicRankWeek(y, m, w1)
+			}
+			code = Model.CountCommandMusic(musics1, userId)
+			data = musics1
+		} else {
+			musics, _ := Model.SearchMusicsProfessional(b)
+			code = Model.CountCommandMusic(musics, userId)
+			data = musics
+		}
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
@@ -407,6 +421,11 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 // GetAUserProfessionalMusicsDays Get A UserProfessional Musics
 func GetAUserProfessionalMusicsDays(c *gin.Context) {
 	title, _ := strconv.Atoi(c.Query("day"))
+	if title <= 0 {
+		title = 0
+	} else if title >= 7 {
+		title = 6
+	}
 	userId := c.GetString("user_id")
 	musics, code := Model.GetCommandMusicDays(userId, title)
 	c.JSON(http.StatusOK, gin.H{

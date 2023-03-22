@@ -89,7 +89,7 @@ type SongList struct {
 
 type CommandMusicCount struct {
 	UserId    string    `gorm:"type:varchar(20);Index"json:"user_id"`
-	musicId   uint      `gorm:"type:uint;Index"json:"list_id"`
+	MusicId   uint      `gorm:"type:uint;Index"json:"music_id"`
 	Year      string    `gorm:"index;not null" json:"year"`
 	Month     string    `gorm:"index;not null" json:"month"`
 	Week      string    `gorm:"index;not null" json:"week"`

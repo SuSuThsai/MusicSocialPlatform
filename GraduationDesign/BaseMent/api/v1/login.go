@@ -36,7 +36,8 @@ func SetToken(c *gin.Context, data Model.User) {
 		UserId: data.UserId,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 100,
-			ExpiresAt: time.Now().Unix() + 7200,
+			//ExpiresAt: time.Now().Unix() + 7200,
+			ExpiresAt: time.Now().AddDate(0, 0, 7).Unix(),
 			Subject:   "GraduationDesign",
 			Issuer:    "Yamada",
 		},
