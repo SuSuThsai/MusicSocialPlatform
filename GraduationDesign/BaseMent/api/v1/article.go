@@ -407,6 +407,38 @@ func SearchActivities(c *gin.Context) {
 	})
 }
 
+func SearchArticleDays(c *gin.Context) {
+	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
+	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
+	title, _ := strconv.Atoi(c.Query("day"))
+	//switch {
+	//case pageSize <= 0:
+	//	pageSize = 10
+	//}
+	//if pageNum == 0 {
+	//	pageNum = 1
+	//}
+	if title >= 7 {
+		title = 7
+	}
+	articles, code, total := Model.SearchArticleDays(title, pageSize, pageNum)
+	if code == utils.SUCCESS {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"data":    articles,
+			"total":   total,
+			"message": utils.GetErrMsg(code),
+		})
+		return
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"status":  code,
+		"data":    articles,
+		"total":   total,
+		"message": utils.GetErrMsg(code),
+	})
+}
+
 func SearchTopics(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
@@ -421,10 +453,10 @@ func SearchTopics(c *gin.Context) {
 	articles, code, total := Model.SearchTopics(title, pageSize, pageNum)
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
-			"status":   code,
-			"articles": articles,
-			"total":    total,
-			"message":  utils.GetErrMsg(code),
+			"status":  code,
+			"data":    articles,
+			"total":   total,
+			"message": utils.GetErrMsg(code),
 		})
 		return
 	}

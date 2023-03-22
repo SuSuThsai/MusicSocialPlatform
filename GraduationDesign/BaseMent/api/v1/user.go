@@ -387,15 +387,32 @@ func GetConcern(c *gin.Context) {
 // GetAUserProfessionalMusics Get A UserProfessional Musics
 func GetAUserProfessionalMusics(c *gin.Context) {
 	userId := c.GetString("user_id")
-	a, _ := Model.CheckUserHabitty(userId)
-	var b []string
-	for i := 0; i < len(a); i++ {
-		b = append(b, a[i].Habits)
+	data, code := Model.GetCommandMusic(userId)
+	if len(data) == 0 || code == utils.ERROR {
+		a, _ := Model.CheckUserHabitty(userId)
+		var b []string
+		for i := 0; i < len(a); i++ {
+			b = append(b, a[i].Habits)
+		}
+		musics, _ := Model.SearchMusicsProfessional(b)
+		code = Model.CountCommandMusic(musics, userId)
 	}
-	musics, _ := Model.SearchMusicsProfessional(b)
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
-		"data":   musics,
+		"status":  code,
+		"data":    data,
+		"message": utils.GetErrMsg(code),
+	})
+}
+
+// GetAUserProfessionalMusicsDays Get A UserProfessional Musics
+func GetAUserProfessionalMusicsDays(c *gin.Context) {
+	title, _ := strconv.Atoi(c.Query("day"))
+	userId := c.GetString("user_id")
+	musics, code := Model.GetCommandMusicDays(userId, title)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    musics,
+		"message": utils.GetErrMsg(code),
 	})
 }
 

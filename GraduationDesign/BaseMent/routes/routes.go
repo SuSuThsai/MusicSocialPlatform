@@ -39,6 +39,7 @@ func InitRoutes() {
 		//search
 		//Basement.GET("searchAll", v1.SearchActivitiesAndComments)
 		Basement.GET("searchArticle/:title", v1.SearchActivities)
+		Basement.GET("GetArticles/days", v1.SearchArticleDays)
 		Basement.GET("searchMusic/:title", v1.SearchMusic)
 		Basement.GET("searchTopic/:title", v1.SearchTopics)
 		//Basement.GET("searchComment", v1.SearchComments)
@@ -125,6 +126,7 @@ func InitRoutes() {
 		User.POST("Music/music_dislike/:id", v1.UserSongDisLike)
 		User.GET("Music/music_isLike/:id", v1.CheckSongLike)
 		User.GET("Music/professional", v1.GetAUserProfessionalMusics)
+		User.GET("Music/professional/days", v1.GetAUserProfessionalMusicsDays)
 
 		//musicList
 		User.POST("MusicList/create", v1.AddMusicList)

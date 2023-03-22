@@ -18,7 +18,7 @@ func main() {
 	//Config.DB.AutoMigrate(&Model.User{}, &Model.UserInfo{}, Model.UserListeningHabits{}, Model.MusicList{}, Model.Tips{}, Model.SongList{})
 	//Config.DB.AutoMigrate(&Model.MusicListLike{}, &Model.MusicLike{})
 	//Config.DB.AutoMigrate(&Model.FollowList{}, &Model.ConcernList{})
-	Config.DB.AutoMigrate(&Model.Article{}, &Model.Comment{}, &Model.MusicTopic{})
+	Config.DB.AutoMigrate(&Model.Article{}, &Model.Comment{}, &Model.MusicTopic{}, &Model.CommandMusicCount{})
 	PersistentSql.InitCache()
 	TopRankCache.InitTopRankCacheBasement()
 	routes.InitRoutes()

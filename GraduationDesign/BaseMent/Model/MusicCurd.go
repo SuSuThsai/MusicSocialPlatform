@@ -2,6 +2,7 @@ package Model
 
 import (
 	"GraduationDesign/BaseMent/Config"
+	"GraduationDesign/BaseMent/Model/Cache"
 	"GraduationDesign/BaseMent/utils"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -252,8 +253,73 @@ func SearchMusics(title string, pageSize int, pageNum int) ([]Music, int, int64)
 	return music, utils.SUCCESS, total
 }
 
+func GetCommandMusicDays(userId string, title int) ([]Music, int) {
+	var data2 []CommandMusicCount
+	Config.DB.Where("user_id =  ? and created_at >= ?",
+		userId, time.Now().AddDate(0, 0, -title)).Find(&data2)
+	var result []Music
+	for i := 0; i < len(data2); i++ {
+		a, _ := GetAMusic(data2[i].musicId)
+		result = append(result, a)
+	}
+	return result, utils.SUCCESS
+}
+
+func GetCommandMusic(userId string) ([]Music, int) {
+	m, d, _ := time.Now().Month().String(), time.Now().Weekday().String(), strconv.Itoa(time.Now().Day())
+	y1, w1 := time.Now().ISOWeek()
+	w := strconv.Itoa(w1)
+	y := strconv.Itoa(y1)
+	var data2 []CommandMusicCount
+	Config.DB.Where("user_id = ? and year = ? and month = ? and week = ? and day = ?",
+		userId, y, m, w, d).Find(&data2)
+	var result []Music
+	if len(data2) != 0 {
+		for i := 0; i < len(data2); i++ {
+			a, _ := GetAMusic(data2[i].musicId)
+			result = append(result, a)
+		}
+		return result, utils.SUCCESS
+	}
+	return result, utils.ERROR
+}
+
+func CountCommandMusic(musics []Music, userId string) int {
+	m, d, n := time.Now().Month().String(), time.Now().Weekday().String(), strconv.Itoa(time.Now().Day())
+	y1, w1 := time.Now().ISOWeek()
+	w := strconv.Itoa(w1)
+	y := strconv.Itoa(y1)
+	var data2 CommandMusicCount
+	Config.DB.Where("year = ? and month = ? and week = ? and day = ?",
+		y, m, w, d).Find(&data2)
+	for i := 0; i < len(musics); i++ {
+		var data CommandMusicCount
+		data.musicId = musics[i].Id
+		data.UserId = userId
+		data.Year = y
+		data.Month = m
+		data.Week = w
+		data.Day = d
+		data.Number = n
+		Config.DB.Create(&data).Model(&CommandMusicCount{})
+	}
+	return utils.SUCCESS
+}
+
 // SearchMusicsProfessional Search The Musics Professional
 func SearchMusicsProfessional(titles []string) ([]Music, int) {
+	if len(titles) == 0 {
+		musics, code, _ := Cache.GetACacheMusicRankWeek()
+		if code == utils.ERROR || len(musics) <= 2 {
+			y, w1 := time.Now().ISOWeek()
+			m := utils.GetCNTimeMonth(time.Now().Month().String())
+			musics, code, _ = GetMusicRankWeek(y, m, w1)
+		}
+		if len(musics) >= 30 {
+			return musics[:30], utils.SUCCESS
+		}
+		return musics, utils.SUCCESS
+	}
 	var music []MusicTopic
 	for _, title := range titles {
 		var data []MusicTopic
