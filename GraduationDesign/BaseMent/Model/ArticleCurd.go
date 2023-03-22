@@ -325,7 +325,7 @@ func SearchUserActivities(userid string, pageSize int, pageNum int) ([]Article, 
 func SearchUserActivities7Days(userid string, pageSize int, pageNum int) ([]Article, int, int64) {
 	var articles []Article
 	var total int64
-	err = Config.DB.Order("Created_At DESC").Where("user_id =  ? and created_at >= ?",
+	err = Config.DB.Order("created_at DESC").Where("user_id =  ? and created_at >= ?",
 		userid, time2.Now().AddDate(0, 0, -7)).Find(&articles).Count(&total).Error
 	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Where("user_id =  ? ",
 	//	userid).Find(&articles).Count(&total).Error

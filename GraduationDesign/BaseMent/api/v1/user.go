@@ -257,7 +257,7 @@ func CheckUserId(c *gin.Context) {
 	maps["background"] = data2.Background
 	maps["concerns"] = data3
 	maps["follows"] = data4
-	maps["works"], _ = Model.CheckUserHabitty(data.Username)
+	maps["works"], _ = Model.CheckUserHabitty(data.UserId)
 	if code == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
@@ -301,7 +301,7 @@ func CheckUserName(c *gin.Context) {
 		maps["concerns"] = len(data3[i])
 		maps["follows"] = len(data4[i])
 		maps["isconcern"] = data5[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].Username)
+		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -340,7 +340,7 @@ func GetFollows(c *gin.Context) {
 		maps["background"] = data2[i].Background
 		maps["concerns"] = data3[i]
 		maps["follows"] = data4[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].Username)
+		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -376,7 +376,7 @@ func GetConcern(c *gin.Context) {
 		maps["background"] = data2[i].Background
 		maps["concerns"] = data3[i]
 		maps["follows"] = data4[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].Username)
+		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -406,6 +406,7 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			code = Model.CountCommandMusic(musics1, userId)
 			data = musics1
 		} else {
+			//musics:=Model.GetAUserCommandMusic30(userId)
 			musics, _ := Model.SearchMusicsProfessional(b)
 			code = Model.CountCommandMusic(musics, userId)
 			data = musics

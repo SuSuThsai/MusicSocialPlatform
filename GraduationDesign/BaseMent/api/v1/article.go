@@ -281,6 +281,14 @@ func GetUserConcernArticles(c *gin.Context) {
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	userId := c.PostForm("user_id")
 	concernList, _ := c.GetPostFormArray("concerner_list")
+	a := c.GetString("user_id")
+	if userId != a {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status":  1015,
+			"message": utils.GetErrMsg(1015),
+		})
+		return
+	}
 	//switch {
 	//case pageSize > 30:
 	//	pageSize = 30
