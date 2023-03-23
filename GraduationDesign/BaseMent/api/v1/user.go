@@ -408,6 +408,15 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 		} else {
 			musics := Model.GetAUserCommandMusic30(userId)
 			//musics, _ := Model.SearchMusicsProfessional(b)
+			if len(musics) < 30 {
+				musics3, _, _ := Cache.GetACacheMusicRankWeek()
+				for _, music := range musics3 {
+					musics = append(musics, music)
+					if len(musics) >= 30 {
+						break
+					}
+				}
+			}
 			code = Model.CountCommandMusic(musics, userId)
 			data = musics
 		}
