@@ -116,7 +116,7 @@ func CountUserMusicListened(userId string, musicId uint) int {
 		err = Config.DB.Model(&UserListenMusicCount{}).Where("user_id = ? and music_id = ?", userId, musicId).Update("listen_count", gorm.Expr("listen_count+ ?", 1)).Error
 		return utils.SUCCESS
 	}
-	Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ? and music_id = ?", userId, musicId).Update("listen_count", gorm.Expr("listen_count+ ?", 1))
+	Config.DB.Model(&UserListenMusicCount{}).Where("user_id = ? and music_id = ?", userId, musicId).Update("listen_count", gorm.Expr("listen_count+ ?", 1))
 	return utils.SUCCESS
 }
 

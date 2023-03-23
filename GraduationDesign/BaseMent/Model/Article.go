@@ -28,7 +28,7 @@ type Article struct {
 }
 
 type Forward struct {
-	ArticleId uint   `gorm:"type:uint;not null;uniqueIndex"`
+	ArticleId uint   `gorm:"type:uint;not null;Index"`
 	UserId    string `gorm:";not null;uniqueIndex"`
 }
 

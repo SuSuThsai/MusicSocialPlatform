@@ -38,14 +38,14 @@ type LoginMemory struct {
 }
 
 type UserListenTypeCount struct {
-	UserId      string `gorm:"type:varchar(20);uniqueIndex;not null"json:"user_id"`
+	UserId      string `gorm:"type:varchar(20);Index;not null"json:"user_id"`
 	Habits      string `gorm:"type:varchar(20);Index"json:"habits"`
 	ListenCount int    `gorm:"type:int;not null;default:0"json:"listen_count"`
 }
 
 type UserListenMusicCount struct {
 	gorm.Model
-	UserId      string    `gorm:"type:varchar(20);uniqueIndex;not null"json:"user_id"`
+	UserId      string    `gorm:"type:varchar(20);Index;not null"json:"user_id"`
 	MusicId     uint      `gorm:"type:uint;Index"json:"music_id"`
 	ListenCount int       `gorm:"type:int;not null;default:0"json:"listen_count"`
 	CreatedAt   time.Time `json:"created_at" gorm:"type:timestamp"`
@@ -53,7 +53,7 @@ type UserListenMusicCount struct {
 }
 
 type UserListeningHabits struct {
-	UserId string `gorm:"type:varchar(20);uniqueIndex;not null"json:"user_id"`
+	UserId string `gorm:"type:varchar(20);Index;not null"json:"user_id"`
 	Habits string `gorm:"type:varchar(20);Index"json:"habits"`
 }
 
