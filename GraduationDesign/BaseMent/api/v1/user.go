@@ -406,8 +406,8 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			code = Model.CountCommandMusic(musics1, userId)
 			data = musics1
 		} else {
-			//musics:=Model.GetAUserCommandMusic30(userId)
-			musics, _ := Model.SearchMusicsProfessional(b)
+			musics := Model.GetAUserCommandMusic30(userId)
+			//musics, _ := Model.SearchMusicsProfessional(b)
 			code = Model.CountCommandMusic(musics, userId)
 			data = musics
 		}
