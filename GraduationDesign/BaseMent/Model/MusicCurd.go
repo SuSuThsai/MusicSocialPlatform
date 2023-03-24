@@ -183,6 +183,8 @@ func SearchUserMusicsLike(userId uint, pageSize int, pageNum int) ([]MusicLike, 
 			result = append(result, music[i])
 			a, _ := GetAMusic(music[i].MusicId)
 			result2 = append(result2, a)
+		} else {
+			total -= 1
 		}
 	}
 	if err != nil {

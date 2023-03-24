@@ -20,7 +20,7 @@ func CheckSongLike(MusicId uint, UserId uint) bool {
 // UserSongLike User The Songs Like
 func UserSongLike(MusicId uint, UserId uint) int {
 	var Like MusicLike
-	Config.DB.Where("MusicId = ? and user_id = ?", MusicId, UserId).First(&Like)
+	Config.DB.Where("music_id = ? and user_id = ?", MusicId, UserId).First(&Like)
 	if Like.ID == 0 {
 		Like = MusicLike{MusicId: MusicId, UserId: UserId, Like: true}
 		err = Config.DB.Create(&Like).Error
@@ -40,7 +40,7 @@ func UserSongLike(MusicId uint, UserId uint) int {
 // UserSongDisLike User The Songs DisLike
 func UserSongDisLike(MusicId uint, userId uint) int {
 	var like MusicLike
-	Config.DB.Where("user_id = ? and music_id = ? and article_id = ?", userId, MusicId).First(&like)
+	Config.DB.Where("user_id = ? and music_id = ?", userId, MusicId).First(&like)
 	if like.ID == 0 {
 		return utils.SUCCESS
 	} else {
@@ -213,7 +213,7 @@ func LikeMusicList(MusicListId uint, userId uint) int {
 			return utils.ERROR
 		}
 	}
-	err = Config.DB.Model(&musicList).Where("id = ?", MusicListId).Update("like", gorm.Expr("like+ ?", 1)).Error
+	err = Config.DB.Model(&musicList).Where("id = ?", MusicListId).Update("like_count", gorm.Expr("like_count+ ?", 1)).Error
 	if err != nil {
 		return utils.ERROR
 	}
@@ -236,7 +236,7 @@ func DisLikeMusicList(MusicListId uint, userId uint) int {
 			return utils.ERROR
 		}
 	}
-	err = Config.DB.Model(&musicList).Where("id = ?", MusicListId).Update("like", gorm.Expr("like- ?", 1)).Error
+	err = Config.DB.Model(&musicList).Where("id = ?", MusicListId).Update("like_count", gorm.Expr("like_count- ?", 1)).Error
 	if err != nil {
 		return utils.ERROR
 	}
