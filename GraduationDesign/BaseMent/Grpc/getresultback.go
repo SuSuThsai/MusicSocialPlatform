@@ -12,51 +12,33 @@ import (
 // TransferFile A function to send a file data and an identifier to the server and receive a string array and an identifier from the server
 func TransferFile(filename *multipart.FileHeader, filetype string) ([]string, string) {
 	client := NewFileTransferClient(Config.FileRpc)
-	fmt.Println(client, "44444")
 	file, _ := filename.Open()
 	defer file.Close()
 
-	// Create a context with a cancel function for the RPC call
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	data, _ := io.ReadAll(file)
 
 	// Call the TransferFile RPC method and get a stream object
-	stream, err := client.TransferFile(ctx)
+	stream, err := client.TransferFile(context.Background())
 	if err != nil {
 		log.Printf("Failed to call TransferFile: %v", err)
 	}
-
-	// Create a buffer of 64KB to read the file data
-	buffer := make([]byte, 64*1024)
-
-	for {
-		// Read a chunk of data from the file into the buffer
-		n, err := file.Read(buffer)
-
-		// Check if we have reached the end of the file or encountered an error
-		if err == io.EOF {
-			break // Break out of the loop if we have reached the end of the file
+	for len(data) > 0 {
+		chunkSize := 64 * 1024
+		if len(data) < chunkSize {
+			chunkSize = len(data)
 		}
-		if err != nil {
-			log.Fatalf("Failed to read file: %v", err) // Log an error and exit if we encountered an error other than EOF
-		}
-
-		// Create a request message with the data chunk and the filetype identifier (only for the first chunk)
-		req := &FileRequest{
-			Data: buffer[:n], // Slice the buffer to get only the valid bytes read from the file
-			Type: "",         // Set an empty string for type by default
-		}
-
-		// Set filetype only for first chunk
-		if n == len(buffer) {
-			req.Type = filetype
-		}
-
-		// Send the request message to the stream
+		req := &FileRequest{Data: data[:chunkSize], Type: filetype}
+		data = data[chunkSize:]
 		if err = stream.Send(req); err != nil {
-			log.Printf("Failed to send request: %v", err)
+			log.Println("failed to send request:", err)
 		}
-
+		//接收服务器的响应，并将结果打印出来
+		//var respond interface{}
+		//err = stream.RecvMsg(respond)
+		//if err != nil {
+		//	log.Fatalf("failed to receive response: %v", err)
+		//}
+		//log.Println("response id = , result = ", respond)
 	}
 
 	// Close and receive final response from server
