@@ -109,7 +109,7 @@ type MusicListLike struct {
 type MusicLike struct {
 	gorm.Model
 	UserId  uint `gorm:"type:uint;Index"json:"user_id"`
-	MusicId uint `gorm:"unique" json:"music_id"`
+	MusicId uint `json:"music_id"`
 	Like    bool `gorm:"type:bool"json:"like"`
 }
 
@@ -123,6 +123,6 @@ type FollowList struct {
 type ConcernList struct {
 	gorm.Model
 	UserId    string `gorm:"type:varchar(20);Index"json:"user_id"`
-	ConcernId string `gorm:"type:varchar(20);unique"json:"concern_id"`
+	ConcernId string `gorm:"type:varchar(20);"json:"concern_id"`
 	Like      bool   `gorm:"type:bool"json:"like"`
 }

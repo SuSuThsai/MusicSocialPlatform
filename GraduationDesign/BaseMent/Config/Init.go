@@ -18,6 +18,7 @@ var TCCos *cos.Client
 var Conf *Config
 var SftpClient *sftp.Client
 var FileRpc *grpc.ClientConn
+var FileRpc2 *grpc.ClientConn
 var Identify string
 
 //var NowUser *middleware.Claims

@@ -244,17 +244,17 @@ func DisLikeMusicList(MusicListId uint, userId uint) int {
 }
 
 // CreatMusicList Creat A MusicList
-func CreatMusicList(data *MusicList) int {
+func CreatMusicList(data *MusicList) (int, uint) {
 	var musicList MusicList
 	Config.DB.Where("user_id = ? and l_name = ?", data.UserId, data.LName).First(&musicList)
 	if musicList.ID > 0 {
-		return utils.ERROR
+		return utils.ERROR, 0
 	}
 	err = Config.DB.Create(&data).Error
 	if err != nil {
-		return utils.ERROR
+		return utils.ERROR, 0
 	}
-	return utils.SUCCESS
+	return utils.SUCCESS, musicList.ID
 }
 
 // CheckAMusicList Check A MusicList is exit or not

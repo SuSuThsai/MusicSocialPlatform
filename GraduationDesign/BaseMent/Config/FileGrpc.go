@@ -10,6 +10,7 @@ import (
 
 func InitFileRpc() {
 	FileRpc = CreateClientConn()
+	//FileRpc2 = CreateClientConn1()
 }
 
 // CreateClientConn A function to create a gRPC client connection to the server
@@ -26,3 +27,18 @@ func CreateClientConn() *grpc.ClientConn {
 	}
 	return conn
 }
+
+//// CreateClientConn1 A function to create a gRPC client connection to the server
+//func CreateClientConn1() *grpc.ClientConn {
+//	keepAlive := keepalive.ClientParameters{
+//		Time:                60 * time.Second, // send pings every 60 seconds if there is no activity
+//		Timeout:             10 * time.Second, // wait 10 second for ping ack before considering the connection dead
+//		PermitWithoutStream: true,             // send pings even without active streams
+//	}
+//	// Dial the server address (localhost:50051 in this example) and return a client connection object
+//	conn, err := grpc.Dial(Conf.FileGrpc.Server[1], grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithKeepaliveParams(keepAlive))
+//	if err != nil {
+//		log.Printf("Failed to dial: %v\n", err)
+//	}
+//	return conn
+//}

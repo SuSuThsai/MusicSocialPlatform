@@ -397,7 +397,7 @@ func (q *QueueForTime) callback(idStr string) error {
 		case 'f':
 			data := strings.Split(payload, " ")
 			id, _ := strconv.Atoi(data[0])
-			id1, _ := strconv.Atoi(data[1][:len(data)-1])
+			id1, _ := strconv.Atoi(data[1][:len(data[1])-1])
 			code := Model.LikeMusicList(uint(id), uint(id1))
 			if code == utils.ERROR {
 				log.Println("LikeMusicListCount persistent fail", code, "articleId:", id, "userId:", data[1][:len(data[1])-1])
@@ -405,7 +405,7 @@ func (q *QueueForTime) callback(idStr string) error {
 		case 'g':
 			data := strings.Split(payload, " ")
 			id, _ := strconv.Atoi(data[0])
-			id1, _ := strconv.Atoi(data[1][:len(data)-1])
+			id1, _ := strconv.Atoi(data[1][:len(data[1])-1])
 			code := Model.DisLikeMusicList(uint(id), uint(id1))
 			if code == utils.ERROR {
 				log.Println("DisLikeMusicListCount persistent fail", code, "articleId:", id, "userId:", data[1][:len(data[1])-1])
