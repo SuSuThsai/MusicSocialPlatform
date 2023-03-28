@@ -118,12 +118,14 @@ func EditUserMusicListImg(c *gin.Context) {
 	if code == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
+			"data":    backgroundUrl,
 			"message": utils.GetErrMsg(code),
 		})
 		return
 	}
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"status":  code,
+		"data":    backgroundUrl,
 		"message": utils.GetErrMsg(code),
 	})
 }
