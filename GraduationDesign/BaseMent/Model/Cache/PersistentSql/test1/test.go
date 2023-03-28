@@ -1,7 +1,9 @@
 package main
 
 import (
+	"GraduationDesign/BaseMent/Model"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -31,15 +33,19 @@ func main() {
 	for _, file := range files {
 		if !file.IsDir() { // 判断是否是目录
 			// 在这里对每个文件进行操作，比如打印文件名
-			//data := strings.Split(file.Name(), " - ")
-			//var music Model.Music
-			//if len(data) == 1 {
-			//	musicname := strings.Split(data[0], ".mp3")
-			//	music.Name = musicname
-			//} else {
-			//	singer := data[0]
-			//	musicname := strings.Split(data[1], ".mp3")
-			//}
+			data := strings.Split(file.Name(), " - ")
+			var music Model.Music
+			if len(data) == 1 {
+				musicname := strings.Split(data[0], ".mp3")
+				music.Name = musicname[0]
+				Model.AddMusic2(&music)
+			} else {
+				singer := data[0]
+				musicname := strings.Split(data[1], ".mp3")
+				music.Name = musicname[0]
+				music.Singer = singer
+				Model.AddMusic2(&music)
+			}
 		}
 	}
 	//

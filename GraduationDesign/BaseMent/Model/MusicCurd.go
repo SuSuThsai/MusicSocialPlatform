@@ -562,6 +562,15 @@ func AddMusic(data *Music) int {
 	return utils.SUCCESS
 }
 
+// AddMusic2 UpLoad Music
+func AddMusic2(data *Music) uint {
+	err = Config.DB.Create(&data).Model(&Music{}).Error
+	if err != nil {
+		return data.ID
+	}
+	return data.ID
+}
+
 // UpLoadMusic UpLoad Music
 func UpLoadMusic() {
 }
