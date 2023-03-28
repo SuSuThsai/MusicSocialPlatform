@@ -7,7 +7,6 @@ import (
 	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/Model/Cache"
 	"GraduationDesign/BaseMent/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -619,8 +618,19 @@ func AddMusicListSong(c *gin.Context) {
 	musicId, _ := strconv.Atoi(c.PostForm("music_id"))
 	userId := c.GetString("user_id")
 	user, _ := Model.CheckUpUserUserid(userId)
-	fmt.Println(listId, musicId, userId, user.ID)
 	code := Model.AddMusicListSong(uint(listId), uint(musicId), user.ID)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": utils.GetErrMsg(code),
+	})
+}
+
+func DeleteMusicListSong(c *gin.Context) {
+	listId, _ := strconv.Atoi(c.PostForm("list_id"))
+	musicId, _ := strconv.Atoi(c.PostForm("music_id"))
+	userId := c.GetString("user_id")
+	user, _ := Model.CheckUpUserUserid(userId)
+	code := Model.DeleteMusicListSong(uint(listId), uint(musicId), user.ID)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": utils.GetErrMsg(code),

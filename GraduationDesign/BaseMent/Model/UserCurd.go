@@ -90,6 +90,17 @@ func AddMusicListSong(listId uint, musicId uint, userId uint) int {
 	return utils.SUCCESS
 }
 
+func DeleteMusicListSong(listId uint, musicId uint, userId uint) int {
+	var musicList SongList
+	err = Config.DB.Where("list_id = ? and music_id = ?", listId, musicId).First(&musicList).Error
+	if musicList.ID == 0 {
+		return utils.SUCCESS
+	} else {
+		Config.DB.Where("list_id = ? and music_id = ?", listId, musicId).Delete(&musicList)
+	}
+	return utils.SUCCESS
+}
+
 func GetMusicListSong(listId uint) ([]Music, int) {
 	var musicList []SongList
 	err = Config.DB.Where("list_id = ?", listId).Find(&musicList).Error
