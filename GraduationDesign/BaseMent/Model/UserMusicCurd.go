@@ -248,13 +248,13 @@ func CreatMusicList(data *MusicList) (int, uint) {
 	var musicList MusicList
 	Config.DB.Where("user_id = ? and l_name = ?", data.UserId, data.LName).First(&musicList)
 	if musicList.ID > 0 {
-		return utils.ERROR, 0
+		return utils.ERROR, musicList.ID
 	}
 	err = Config.DB.Create(&data).Error
 	if err != nil {
 		return utils.ERROR, 0
 	}
-	return utils.SUCCESS, musicList.ID
+	return utils.SUCCESS, data.ID
 }
 
 // CheckAMusicList Check A MusicList is exit or not
