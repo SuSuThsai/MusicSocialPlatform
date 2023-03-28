@@ -287,7 +287,6 @@ func EditMusicList(id uint, data *MusicList) int {
 	var maps = make(map[string]interface{})
 	maps["l_name"] = data.LName
 	maps["desc"] = data.Desc
-	maps["img"] = data.Img
 	err = Config.DB.Model(&musicList).Where("id = ?", id).Updates(&maps).Error
 	if err != nil {
 		return utils.ERROR
