@@ -385,7 +385,7 @@ func EditMusicList(c *gin.Context) {
 }
 
 func DeleteMusicList(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, _ := strconv.Atoi(c.Param("list_id"))
 	code := Model.DeleteMusicList(uint(id))
 	if code == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{

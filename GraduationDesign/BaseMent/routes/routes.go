@@ -131,6 +131,7 @@ func InitRoutes() {
 
 		//musicList
 		User.POST("MusicList/create", v1.AddMusicList)
+		User.POST("MusicList/delete/:list_id", v1.DeleteMusicList)
 		User.GET("MusicList/GetmusicListSongs/:list_id", v1.GetMusicListSong)
 		User.POST("MusicList/AddmusicListSongs", v1.AddMusicListSong)
 		User.POST("MusicList/DeletemusicListSongs", v1.DeleteMusicListSong)
