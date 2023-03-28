@@ -293,7 +293,7 @@ func EditMusicListImg(listId uint, img string) int {
 		return utils.ERROR
 	}
 	maps["img"] = img
-	err = Config.DB.Model(&MusicList{}).Where("id = ?", musicList.ID).Updates(&maps).Error
+	err = Config.DB.Model(&musicList).Where("id = ?", musicList.ID).Updates(&maps).Error
 	if err != nil {
 		return utils.ERROR
 	}
