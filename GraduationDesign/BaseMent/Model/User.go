@@ -78,6 +78,24 @@ type Tips struct {
 	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp"`
 }
 
+type MusicCommandIsListen struct {
+	UserId   string `gorm:"type:varchar(20);Index"json:"user_id"`
+	MusicId  uint   `gorm:"type:uint;Index"json:"music_id"`
+	IsListen int    `gorm:"default:0";json:"is_listen"`
+}
+
+type CommandMusicListenCount struct {
+	UserId    string    `gorm:"type:varchar(20);Index"json:"user_id"`
+	Year      string    `gorm:"index;not null" json:"year"`
+	Month     string    `gorm:"index;not null" json:"month"`
+	Week      string    `gorm:"index;not null" json:"week"`
+	Day       string    `gorm:"index;not null" json:"day"`
+	Number    string    `gorm:"index;not null" json:"number"`
+	IsListen  int       `gorm:"default:0";json:"is_listen"`
+	CreatedAt time.Time `json:"created_at" gorm:"type:timestamp"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp"`
+}
+
 type SongList struct {
 	gorm.Model
 	UserId    uint      `gorm:"type:uint;Index"json:"user_id"`

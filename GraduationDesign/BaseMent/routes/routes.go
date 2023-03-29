@@ -128,6 +128,7 @@ func InitRoutes() {
 		User.GET("Music/music_isLike/:id", v1.CheckSongLike)
 		User.GET("Music/professional", v1.GetAUserProfessionalMusics)
 		User.GET("Music/professional/days", v1.GetAUserProfessionalMusicsDays)
+		User.POST("Music/professional/MusicCount/:id", v1.GetUserCommandMusicCount)
 
 		//musicList
 		User.POST("MusicList/create", v1.AddMusicList)

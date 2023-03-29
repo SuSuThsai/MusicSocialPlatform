@@ -12,6 +12,7 @@ func InitTopRankCacheBasement() {
 	specM := "0 15 0 1/10 * ?"
 	specY := "0 0 3 1 1/2 ?"
 	utils.ScheduledUpdateTask(Cache.PersistentMusicDayRank, specD)
+	utils.ScheduledUpdateTask(Model.DeleteCommandMusicIsListen, specD)
 	utils.ScheduledUpdateTask(Cache.PersistentMusicListDayRank, specD)
 	utils.ScheduledUpdateTask(Cache.UpdateMusicListRankWeek, specW)
 	utils.ScheduledUpdateTask(Cache.UpdateMusicListRankMonth, specM)

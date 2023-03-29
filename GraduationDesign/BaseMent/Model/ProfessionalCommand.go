@@ -10,16 +10,17 @@ func GetAUserCommandMusic30(userId string) []Music {
 	var userHabbity []UserListenTypeCount
 	var allUserHabbity [][]UserListenTypeCount
 	var users []User
-	Config.DB.Find(&users).Model(&User{})
+	Config.DB.Model(&User{}).Find(&users)
 	for i := 0; i < len(users); i++ {
 		if users[i].UserId == userId {
 			continue
 		}
 		var data []UserListenTypeCount
-		Config.DB.Where("user_id = ?", userId).Order("listen_count DESC").Find(&data).Model(&UserListenTypeCount{})
+		Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&data)
 		allUserHabbity = append(allUserHabbity, data)
 	}
-	Config.DB.Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity).Model(&UserListenTypeCount{})
+
+	Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity)
 	var similarities []float64
 	for _, userHabbity1 := range allUserHabbity {
 		similarity := calculateSimilarity(userHabbity, userHabbity1)
@@ -36,21 +37,62 @@ func GetAUserCommandMusic30(userId string) []Music {
 				Config.DB.Where("user_id = ?", musicType.UserId).Order("listen_count DESC").Limit(100).Find(&music)
 				for _, data := range music {
 					var musicTopic []MusicTopic
-					Config.DB.Where("user_id = ?", data.MusicId).Order("listen_count DESC").Limit(10).Find(&musicTopic)
+					Config.DB.Where("id = ?", data.MusicId).Limit(10).Find(&musicTopic)
 					for _, topic := range musicTopic {
 						if topic.Tip == musicType.Habits {
 							a, _ := GetAMusic(data.MusicId)
 							recommendedMusic = append(recommendedMusic, a)
 						}
-						if len(recommendedMusic) > 30 {
-							return recommendedMusic
-						}
+						//if len(recommendedMusic) > 30 {
+						//	return recommendedMusic
+						//}
 					}
 				}
 			}
 		}
 	}
-	return recommendedMusic
+	if len(recommendedMusic) <= 30 {
+		return recommendedMusic
+	}
+	//TODO 改变推荐逻辑 改为优先级推荐
+	var userMusicListenCount []UserListenMusicCount
+	Config.DB.Model(&UserListenMusicCount{}).Where("user_id = ?", userId).Find(&userMusicListenCount)
+	flag := map[int]int{}
+	for i := 0; i < len(userMusicListenCount); i++ {
+		flag[int(userMusicListenCount[i].MusicId)] = userMusicListenCount[i].ListenCount
+	}
+	//三类 <5 5~10 10~20 >20
+	type musicCount struct {
+		music Music
+		num   int
+	}
+	countPic := make([][]musicCount, 4)
+	for i := 0; i < len(recommendedMusic); i++ {
+		if flag[int(recommendedMusic[i].Id)] < 5 {
+			countPic[0] = append(countPic[0], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+		} else if 5 <= flag[int(recommendedMusic[i].Id)] && flag[int(recommendedMusic[i].Id)] < 10 {
+			countPic[1] = append(countPic[1], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+		} else if 10 <= flag[int(recommendedMusic[i].Id)] && flag[int(recommendedMusic[i].Id)] < 20 {
+			countPic[2] = append(countPic[2], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+		} else {
+			countPic[3] = append(countPic[3], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+		}
+	}
+	for i := 0; i < len(countPic); i++ {
+		sort.Slice(countPic[i], func(j, k int) bool {
+			return countPic[i][j].num < countPic[i][k].num
+		})
+	}
+	var result []Music
+	for i := 0; i < len(countPic); i++ {
+		for j := 0; j < len(countPic[i]); j++ {
+			result = append(result, countPic[i][j].music)
+			if len(result) > 30 {
+				return result
+			}
+		}
+	}
+	return result
 }
 
 // 皮尔逊相关系数来计算用户之间的相似度

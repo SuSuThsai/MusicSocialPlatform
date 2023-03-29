@@ -87,6 +87,17 @@ func SongListen(c *gin.Context) {
 	})
 }
 
+func GetUserCommandMusicCount(c *gin.Context) {
+	MusicId, _ := strconv.Atoi(c.Param("id"))
+	userId := c.GetString("user_id")
+	code := Model.GetUserCommandMusicCount(userId, uint(MusicId))
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": utils.GetErrMsg(code),
+	})
+	return
+}
+
 func UserSongListen(c *gin.Context) {
 	MusicId, _ := strconv.Atoi(c.Param("id"))
 	userId := c.GetString("user_id")

@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"log"
+	"strconv"
+	"time"
 )
 
 var err error
@@ -128,6 +130,41 @@ func CountUserMusicListened(userId string, musicId uint) int {
 		return utils.SUCCESS
 	}
 	Config.DB.Model(&UserListenMusicCount{}).Where("user_id = ? and music_id = ?", userId, musicId).Update("listen_count", gorm.Expr("listen_count+ ?", 1))
+	return utils.SUCCESS
+}
+
+func DeleteCommandMusicIsListen() {
+	Config.DB.Delete(&MusicCommandIsListen{})
+}
+
+func GetUserCommandMusicCount(userId string, musicId uint) int {
+	var data2 MusicCommandIsListen
+	var data CommandMusicListenCount
+	m, d, n := time.Now().Month().String(), time.Now().Weekday().String(), strconv.Itoa(time.Now().Day())
+	y1, w1 := time.Now().ISOWeek()
+	w := strconv.Itoa(w1)
+	y := strconv.Itoa(y1)
+	err = Config.DB.Where("user_id = ?", userId).Find(&data2).Error
+	if data2.IsListen == 0 || err == gorm.ErrRecordNotFound {
+		data2.UserId = userId
+		data2.MusicId = musicId
+		data2.IsListen = 1
+		Config.DB.Create(&data2)
+		err = Config.DB.Where("user_id = ? and year = ? and month = ? and week = ? and day = ?", userId, y, m, w, d).Find(&data).Error
+		if data.UserId == "" || err == gorm.ErrRecordNotFound {
+			data.UserId = userId
+			data.Year = y
+			data.Week = w
+			data.Month = m
+			data.Week = w
+			data.Day = d
+			data.Number = n
+			data.IsListen = 1
+			Config.DB.Create(&data)
+		} else {
+			Config.DB.Model(&data).Where("user_id = ? and year = ? and month = ? and week = ? and day = ?", userId, y, m, w, d).Update("is_listen", gorm.Expr("is_listen+ ?", 1))
+		}
+	}
 	return utils.SUCCESS
 }
 
