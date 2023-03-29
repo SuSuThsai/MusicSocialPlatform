@@ -34,7 +34,7 @@ func main() {
 	//if err != nil {
 	//	// 读取目录内容失败，执行错误处理逻辑
 	//}
-	file1, _ := os.OpenFile("BaseMent/Model/Cache/PersistentSql/test1/data.txt", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
+	file1, _ := os.OpenFile("BaseMent/Model/Cache/PersistentSql/test1/data2.txt", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	defer file1.Close()
 	var music []Model.Music
 	Config.DB.Where("source = ?", "").Find(&music)
