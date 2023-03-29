@@ -423,9 +423,14 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			data = musics
 		}
 	}
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(data); i++ {
+		data3 = append(data3, Model.GetMusicHabit(data[i].Id, ""))
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
+		"data2":   data3,
 		"message": utils.GetErrMsg(code),
 	})
 }
@@ -440,9 +445,14 @@ func GetAUserProfessionalMusicsDays(c *gin.Context) {
 	}
 	userId := c.GetString("user_id")
 	musics, code := Model.GetCommandMusicDays(userId, title)
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"message": utils.GetErrMsg(code),
 	})
 }
