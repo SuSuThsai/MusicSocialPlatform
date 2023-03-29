@@ -490,10 +490,15 @@ func SearchMusic(c *gin.Context) {
 	//	pageNum = 1
 	//}
 	musics, code, total := Model.SearchMusics(title, pageSize, pageNum)
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
 			"data":    musics,
+			"data2":   data3,
 			"total":   total,
 			"message": utils.GetErrMsg(code),
 		})
@@ -502,6 +507,7 @@ func SearchMusic(c *gin.Context) {
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})

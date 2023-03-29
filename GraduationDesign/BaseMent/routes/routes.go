@@ -138,6 +138,7 @@ func InitRoutes() {
 		User.POST("MusicList/edit/:id", v1.EditMusicList)
 		User.POST("MusicList/editimg/:id", v1.EditUserMusicListImg)
 		User.POST("MusicList/musicList_dislike/:id", v1.DisLikeMusicList)
+		User.POST("MusicList/musicList_like/:id", v1.LikeMusicList)
 		User.GET("MusicList/musicList_isLike/:id", v1.CheckMusicListLike)
 	}
 	//port, err := utils.GetFreePort()

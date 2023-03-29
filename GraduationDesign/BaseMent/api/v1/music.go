@@ -56,6 +56,7 @@ func MusicHabbtyGet(c *gin.Context) {
 	})
 	return
 }
+
 func MusicListHabbtyGet(c *gin.Context) {
 	listId, _ := strconv.Atoi(c.Param("id"))
 	data := Model.GetMusicListHabit(uint(listId))
@@ -106,11 +107,16 @@ func UserSongListen(c *gin.Context) {
 func GetUserSongListen(c *gin.Context) {
 	userId := c.GetString("user_id")
 	data, data2, code := Model.GetUserMusicListened(userId)
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(data2); i++ {
+		data3 = append(data3, Model.GetMusicHabit(data2[i].Id, ""))
+	}
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
 			"data":    data,
 			"data2":   data2,
+			"data3":   data3,
 			"message": utils.GetErrMsg(code),
 		})
 		return
@@ -119,6 +125,7 @@ func GetUserSongListen(c *gin.Context) {
 		"status":  code,
 		"data":    data,
 		"data2":   data2,
+		"data3":   data3,
 		"message": utils.GetErrMsg(code),
 	})
 }
@@ -404,10 +411,16 @@ func SearchAllMusics(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	musics, code, total := Model.SearchAllMusics(pageSize, pageNum)
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		tips := Model.GetMusicHabit(musics[i].Id, "")
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": code,
 			"data":   musics,
+			"data2":  data3,
 			"total":  total,
 			"msg":    utils.GetErrMsg(code),
 		})
@@ -416,6 +429,7 @@ func SearchAllMusics(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": code,
 		"data":   musics,
+		"data2":  data3,
 		"total":  total,
 		"msg":    utils.GetErrMsg(code),
 	})
@@ -425,10 +439,19 @@ func SearchAllMusicLists(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	musics, code, total := Model.SearchAllMusicList(pageSize, pageNum)
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musics); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": code,
 			"data":   musics,
+			"data2":  data3,
 			"total":  total,
 			"msg":    utils.GetErrMsg(code),
 		})
@@ -437,6 +460,7 @@ func SearchAllMusicLists(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": code,
 		"data":   musics,
+		"data2":  data3,
 		"total":  total,
 		"msg":    utils.GetErrMsg(code),
 	})
@@ -448,11 +472,16 @@ func SearchUserMusicsLike(c *gin.Context) {
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	a, _, _, _, _ := Model.GetUser(userId)
 	musics, musicData, code, total := Model.SearchUserMusicsLike(a.ID, pageSize, pageNum)
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musicData); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musicData[i].Id, ""))
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": code,
 			"data":   musics,
 			"data2":  musicData,
+			"data3":  data3,
 			"total":  total,
 			"msg":    utils.GetErrMsg(code),
 		})
@@ -462,6 +491,7 @@ func SearchUserMusicsLike(c *gin.Context) {
 		"status": code,
 		"data":   musics,
 		"data2":  musicData,
+		"data3":  data3,
 		"total":  total,
 		"msg":    utils.GetErrMsg(code),
 	})
@@ -473,11 +503,20 @@ func SearchUserMusicListLike(c *gin.Context) {
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	a, _, _, _, _ := Model.GetUser(userId)
 	musics, music2, code, total := Model.SearchUserMusicsListLike(a.ID, pageSize, pageNum)
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musics); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": code,
 			"data":   musics,
 			"data2":  music2,
+			"data3":  data3,
 			"total":  total,
 			"msg":    utils.GetErrMsg(code),
 		})
@@ -487,6 +526,7 @@ func SearchUserMusicListLike(c *gin.Context) {
 		"status": code,
 		"data":   musics,
 		"data2":  music2,
+		"data3":  data3,
 		"total":  total,
 		"msg":    utils.GetErrMsg(code),
 	})
@@ -504,10 +544,19 @@ func SearchMusicList(c *gin.Context) {
 		pageNum = 1
 	}
 	musicList, code, total := Model.SearchMusicLists(title, pageSize, pageNum)
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musicList); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musicList[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
 			"data":    musicList,
+			"data2":   data3,
 			"total":   total,
 			"message": utils.GetErrMsg(code),
 		})
@@ -516,6 +565,7 @@ func SearchMusicList(c *gin.Context) {
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"status":  code,
 		"data":    musicList,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -554,10 +604,19 @@ func GetUserMusicList(c *gin.Context) {
 	}
 	a, _, _, _, _ := Model.GetUser(UserId)
 	musicList, code, total := Model.GetUserMusicList(a.ID, pageSize, pageNum)
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musicList); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musicList[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
 			"data":    musicList,
+			"data2":   data3,
 			"total":   total,
 			"message": utils.GetErrMsg(code),
 		})
@@ -640,9 +699,14 @@ func DeleteMusicListSong(c *gin.Context) {
 func GetMusicListSong(c *gin.Context) {
 	listId, _ := strconv.Atoi(c.Param("list_id"))
 	data, code := Model.GetMusicListSong(uint(listId))
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(data); i++ {
+		data3 = append(data3, Model.GetMusicHabit(data[i].Id, ""))
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
+		"data2":   data3,
 		"message": utils.GetErrMsg(code),
 	})
 }

@@ -29,6 +29,10 @@ func MusicDayRankAdd(c *gin.Context) {
 
 func GetMusicRankList(c *gin.Context) {
 	musics, code, total := TopRankCache.GetMusicRankList()
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status:":  code,
@@ -39,6 +43,7 @@ func GetMusicRankList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -51,6 +56,10 @@ func GetMusicRankWeekList(c *gin.Context) {
 		m := utils.GetCNTimeMonth(time.Now().Month().String())
 		musics, code, total = Model.GetMusicRankWeek(y, m, w1)
 	}
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -61,6 +70,7 @@ func GetMusicRankWeekList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -73,6 +83,10 @@ func GetMusicRankMonthList(c *gin.Context) {
 		m := utils.GetCNTimeMonth(time.Now().Month().String())
 		musics, code, total = Model.GetMusicRankMonth(y, m)
 	}
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -83,6 +97,7 @@ func GetMusicRankMonthList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -94,6 +109,10 @@ func GetMusicRankYearList(c *gin.Context) {
 		y, _ := time.Now().ISOWeek()
 		musics, code, total = Model.GetMusicRankYear(y)
 	}
+	var data3 [][]Model.MusicTopic
+	for i := 0; i < len(musics); i++ {
+		data3 = append(data3, Model.GetMusicHabit(musics[i].Id, ""))
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -104,6 +123,7 @@ func GetMusicRankYearList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -128,6 +148,14 @@ func MusicListDayRankAdd(c *gin.Context) {
 func MusicListRankDayList(c *gin.Context) {
 	Cache.PersistentMusicListDayRank()
 	musicList, code, total := TopRankCache.GetMusicListRankList()
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musicList); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musicList[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -138,6 +166,7 @@ func MusicListRankDayList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musicList,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -145,6 +174,14 @@ func MusicListRankDayList(c *gin.Context) {
 
 func GetMusicListRankWeekList(c *gin.Context) {
 	musics, code, total := Cache.GetACacheMusicListRankWeek()
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musics); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		y, w1 := time.Now().ISOWeek()
 		m := utils.GetCNTimeMonth(time.Now().Month().String())
@@ -160,6 +197,7 @@ func GetMusicListRankWeekList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"dats2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -172,6 +210,14 @@ func GetMusicListRankMonthList(c *gin.Context) {
 		m := utils.GetCNTimeMonth(time.Now().Month().String())
 		musics, code, total = Model.GetMusicListRankMonth(y, m)
 	}
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musics); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -182,6 +228,7 @@ func GetMusicListRankMonthList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
@@ -193,6 +240,14 @@ func GetMusicListRankYearList(c *gin.Context) {
 		y, _ := time.Now().ISOWeek()
 		musics, code, total = Model.GetMusicListRankYear(y)
 	}
+	var data3 [][]Model.Tips
+	for i := 0; i < len(musics); i++ {
+		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
+		if len(tips) > 5 {
+			tips = tips[:5]
+		}
+		data3 = append(data3, tips)
+	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  code,
@@ -203,6 +258,7 @@ func GetMusicListRankYearList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    musics,
+		"data2":   data3,
 		"total":   total,
 		"message": utils.GetErrMsg(code),
 	})
