@@ -84,8 +84,8 @@ func GetCommentListByArticleId(c *gin.Context) {
 }
 
 func GetCommentListByTypeId(c *gin.Context) {
-	id, _ := strconv.Atoi(c.PostForm("id"))
-	id2, _ := strconv.Atoi(c.PostForm("type"))
+	id, _ := strconv.Atoi(c.Query("id"))
+	id2, _ := strconv.Atoi(c.Query("type"))
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	//switch {
