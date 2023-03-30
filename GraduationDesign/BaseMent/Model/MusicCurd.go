@@ -580,6 +580,11 @@ func CreatMusicHabit(musicId uint, musicName string, tip string) int {
 	musicTopic.Id = musicId
 	musicTopic.Name = musicName
 	musicTopic.Tip = tip
+	var data2 MusicTopic
+	err = Config.DB.Where("id = ? and name = ? and tip = ?", musicId, musicName, tip).Find(&data2).Error
+	if data2.Id != 0 && data2.Tip == "" {
+		return utils.SUCCESS
+	}
 	err = Config.DB.Create(&musicTopic).Model(&MusicTopic{}).Error
 	if err != nil {
 		return utils.ERROR
