@@ -576,6 +576,14 @@ func GetACacheMusicRankWeek() ([]Model.Music, int, int64) {
 	return musics.music, utils.SUCCESS, musics.total
 }
 
+func UpdateMusicRankDay() {
+	_, _ = Config.DBR2.Del(context.Background(), Config.Conf.Rank.CacheRankMusicDay).Result()
+}
+
+func UpdateMusicListRankDay() {
+	_, _ = Config.DBR2.Del(context.Background(), Config.Conf.Rank.CacheRankMusicListDay).Result()
+}
+
 func UpdateMusicRankWeek() {
 	var data []Model.Music
 	key := utils.GetCacheNameMusicRank("week")

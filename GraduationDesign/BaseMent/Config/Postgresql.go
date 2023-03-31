@@ -39,5 +39,14 @@ func InitsPSQL() {
 	if err != nil {
 		log.Fatal("无法连接到PSQL,请检查参数", err)
 	}
+	sqlDb, _ := DB.DB()
+	// SetMaxIdleConns 设置空闲连接池中的最大连接数。
+	sqlDb.SetMaxIdleConns(50)
+
+	// SetMaxOpenConns 设置到数据库的最大打开连接数。
+	sqlDb.SetMaxOpenConns(900)
+
+	// SetConnMaxLifetime 设置连接可以重用的最长时间。
+	sqlDb.SetConnMaxLifetime(10 * time.Second)
 	//DB.AutoMigrate(&Model.User{}, &Model.UserInfo{})
 }

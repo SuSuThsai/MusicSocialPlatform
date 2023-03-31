@@ -67,6 +67,7 @@ func InitRoutes() {
 		//musiclist
 		Basement.POST("MusicList/listRank/:id", v1.MusicListDayRankAdd)
 		Basement.GET("MusicList/search", v1.SearchAllMusicLists)
+		Basement.GET("MusicList/GetmusicListSongs/:list_id", v1.GetMusicListSong)
 		Basement.GET("MusicList/Habbty/:id", v1.MusicListHabbtyGet)
 		Basement.GET("MusicList/musicList_rank_day", v1.MusicListRankDayList)
 		Basement.GET("MusicList/musicList_rank_week", v1.GetMusicListRankWeekList)
@@ -133,7 +134,6 @@ func InitRoutes() {
 		//musicList
 		User.POST("MusicList/create", v1.AddMusicList)
 		User.POST("MusicList/delete/:list_id", v1.DeleteMusicList)
-		User.GET("MusicList/GetmusicListSongs/:list_id", v1.GetMusicListSong)
 		User.POST("MusicList/AddmusicListSongs", v1.AddMusicListSong)
 		User.POST("MusicList/DeletemusicListSongs", v1.DeleteMusicListSong)
 		User.POST("MusicList/edit/:id", v1.EditMusicList)

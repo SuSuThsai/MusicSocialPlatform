@@ -5,6 +5,7 @@ import (
 	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/utils"
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"strconv"
@@ -39,6 +40,7 @@ func GetMusicRankList() ([]Model.Music, int, int64) {
 		log.Println("获取排行榜失败:", err)
 		return nil, utils.ERROR, 0
 	}
+	fmt.Println(nums)
 	musics, code, total := Model.GetAMusicList(nums)
 	return musics, code, total
 }
