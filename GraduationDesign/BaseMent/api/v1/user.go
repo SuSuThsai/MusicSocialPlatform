@@ -248,6 +248,20 @@ func CheckUserId(c *gin.Context) {
 			"message": utils.GetErrMsg(code),
 		})
 	}
+	x := Model.GetUserTypeListened(data.UserId)
+	if len(x) > 4 {
+		x = x[:4]
+	}
+	var y []string
+	for i := 0; i < len(x); i++ {
+		a := x[i].Habits
+		b := strings.Trim(a, "0%")
+		f := strings.Trim(b, "25%")
+		d := strings.Trim(f, "50%")
+		e := strings.Trim(d, "75%")
+		x[i].Habits = strings.Trim(e, "100%")
+		y = append(y, x[i].Habits)
+	}
 	var maps = make(map[string]interface{})
 	maps["id"] = data.ID
 	maps["user_id"] = data.UserId
@@ -259,7 +273,7 @@ func CheckUserId(c *gin.Context) {
 	maps["background"] = data2.Background
 	maps["concerns"] = data3
 	maps["follows"] = data4
-	maps["works"], _ = Model.CheckUserHabitty(data.UserId)
+	maps["works"] = y
 	if code == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  code,
@@ -393,7 +407,7 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 	userId := c.GetString("user_id")
 	data, code := Model.GetCommandMusic(userId)
 	if len(data) == 0 || code == utils.ERROR {
-		a, _ := Model.CheckUserHabitty(userId)
+		a := Model.GetUserTypeListened(userId)
 		var b []string
 		for i := 0; i < len(a); i++ {
 			b = append(b, a[i].Habits)

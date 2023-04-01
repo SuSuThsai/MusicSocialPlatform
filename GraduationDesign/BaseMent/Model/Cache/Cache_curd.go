@@ -7,7 +7,6 @@ import (
 	"GraduationDesign/BaseMent/utils"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"strconv"
@@ -384,7 +383,6 @@ func UpdateCacheMusicListDisLike(MusicListId uint, userId uint) int {
 // PersistentMusicDayRank Persistent Musics Day Rank
 func PersistentMusicDayRank() {
 	nums, err := Config.DBR2.ZRevRangeWithScores(context.Background(), Config.Conf.Rank.CacheRankMusicDay, 0, -1).Result()
-	fmt.Println(nums)
 	if err != nil {
 		log.Println("缓存获取排行榜失败:", err)
 	}

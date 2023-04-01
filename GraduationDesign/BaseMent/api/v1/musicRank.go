@@ -146,7 +146,6 @@ func MusicListDayRankAdd(c *gin.Context) {
 }
 
 func MusicListRankDayList(c *gin.Context) {
-	Cache.PersistentMusicListDayRank()
 	musicList, code, total := TopRankCache.GetMusicListRankList()
 	var data3 [][]Model.Tips
 	for i := 0; i < len(musicList); i++ {

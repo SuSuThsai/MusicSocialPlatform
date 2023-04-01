@@ -297,8 +297,15 @@ func SearchArticleDays(title int, pageSize int, pageNum int) ([]Article, int, in
 func SearchTopics(title string, pageSize int, pageNum int) ([]Article, int, int64) {
 	var articles []Article
 	var total int64
-	err = Config.DB.Order("created_at DESC").Where("topic1 LIKE ? or topic2 LIKE ? or topic3 LIKE ?",
-		"%"+title+"%", "%"+title+"%", "%"+title+"%").Find(&articles).Count(&total).Error
+	if title != "" {
+		//err = Config.DB.Order("created_at DESC").Where("content LIKE ? or topic1 LIKE ? or topic2 LIKE ? or topic3 LIKE ?",
+		//	"%"+title+"%", "%"+title+"%", "%"+title+"%", "%"+title+"%").Find(&articles).Count(&total).Error
+		err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").Where("content LIKE ? or topic1 LIKE ? or topic2 LIKE ? or topic3 LIKE ?",
+			"%"+title+"%", "%"+title+"%", "%"+title+"%", "%"+title+"%").Find(&articles).Count(&total).Error
+	} else {
+		err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").Where("content LIKE ? or topic1 LIKE ? or topic2 LIKE ? or topic3 LIKE ?",
+			"%"+title+"%", "%"+title+"%", "%"+title+"%", "%"+title+"%").Find(&articles).Count(&total).Error
+	}
 	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Where("content LIKE ?",
 	//	"%"+title+"%").Find(&articles).Count(&total).Error
 	if err != nil {

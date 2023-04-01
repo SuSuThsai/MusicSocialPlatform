@@ -3,6 +3,7 @@ package Model
 import (
 	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/utils"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 	"log"
@@ -244,8 +245,12 @@ func SearchUserMusicsListLike(userId uint, pageSize int, pageNum int) ([]MusicLi
 func SearchMusics(title string, pageSize int, pageNum int) ([]Music, int, int64) {
 	var music []Music
 	var total int64
-	err = Config.DB.Order("created_at DESC").Where("name LIKE ? or singer LIKE ?",
-		"%"+title+"%", "%"+title+"%").Find(&music).Count(&total).Error
+	if title != "" {
+		err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").Where("name LIKE ? or singer LIKE ?",
+			"%"+title+"%", "%"+title+"%").Find(&music).Count(&total).Error
+	} else {
+		err = Config.DB.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("created_at DESC").Find(&music).Count(&total).Error
+	}
 	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Where("name LIKE ?",
 	//	"%"+title+"%").Find(&music).Count(&total).Error
 	if err != nil {
@@ -255,13 +260,14 @@ func SearchMusics(title string, pageSize int, pageNum int) ([]Music, int, int64)
 }
 
 func GetCommandMusicDays(userId string, title int) ([]Music, int) {
-	m, d, n := time.Now().AddDate(0, 0, -title).Truncate(24*time.Hour).Month().String(), time.Now().AddDate(0, 0, -title).Truncate(24*time.Hour).Weekday().String(), strconv.Itoa(time.Now().AddDate(0, 0, -title).Truncate(24*time.Hour).Day())
-	y1, w1 := time.Now().AddDate(0, 0, -title).Truncate(24 * time.Hour).ISOWeek()
+	m, d, n := time.Now().AddDate(0, 0, -title).Month().String(), time.Now().AddDate(0, 0, -title).Weekday().String(), strconv.Itoa(time.Now().AddDate(0, 0, -title).Day())
+	y1, w1 := time.Now().AddDate(0, 0, -title).ISOWeek()
 	w := strconv.Itoa(w1)
 	y := strconv.Itoa(y1)
 	var data2 []CommandMusicCount
 	Config.DB.Where("user_id =  ? and year = ? and month = ? and week = ? and day = ? and number = ?",
 		userId, y, m, w, d, n).Find(&data2)
+	fmt.Println("3333", len(data2), title)
 	var result []Music
 	for i := 0; i < len(data2); i++ {
 		a, _ := GetAMusic(data2[i].MusicId)
@@ -400,12 +406,12 @@ func MusicRankCount(id uint, y string, m string, w string, d string, v string, n
 	var musicM MusicRankMonth
 	var musicW MusicRankWeek
 	var musicD MusicRankDay
-	err = Config.DB.Where("id = ? and year = ?", id, y).Model(&musicY).Error
+	err = Config.DB.Where("id = ? and year = ?", id, y).First(&musicY).Error
 	if err == gorm.ErrRecordNotFound || musicY.Id == 0 {
 		musicY = MusicRankYear{
 			Id:    id,
 			Year:  y,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicY).Error
 		if err != nil {
@@ -416,13 +422,13 @@ func MusicRankCount(id uint, y string, m string, w string, d string, v string, n
 	if err != nil {
 		log.Println("增加年记录数据失败:", err, "y", y, "musicId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ?", id, y, m).Model(&musicM).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ?", id, y, m).First(&musicM).Error
 	if err == gorm.ErrRecordNotFound || musicM.Id == 0 {
 		musicM = MusicRankMonth{
 			Id:    id,
 			Year:  y,
 			Month: m,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicM).Error
 		if err != nil {
@@ -433,14 +439,14 @@ func MusicRankCount(id uint, y string, m string, w string, d string, v string, n
 	if err != nil {
 		log.Println("增加年月记录数据失败:", err, "y", y, "m", m, "musicId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ?", id, y, m, w).Model(&musicW).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ?", id, y, m, w).First(&musicW).Error
 	if err == gorm.ErrRecordNotFound || musicW.Id == 0 {
 		musicW = MusicRankWeek{
 			Id:    id,
 			Year:  y,
 			Month: m,
 			Week:  w,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicW).Error
 		if err != nil {
@@ -451,7 +457,7 @@ func MusicRankCount(id uint, y string, m string, w string, d string, v string, n
 	if err != nil {
 		log.Println("增加年月周记录数据失败:", err, "y", y, "m", m, "w", w, "musicId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ? and day = ?", id, y, m, w, d).Model(&musicD).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ? and day = ?", id, y, m, w, d).First(&musicD).Error
 	if err == gorm.ErrRecordNotFound || musicD.Id == 0 {
 		musicD = MusicRankDay{
 			Id:     id,
@@ -460,7 +466,7 @@ func MusicRankCount(id uint, y string, m string, w string, d string, v string, n
 			Week:   w,
 			Day:    d,
 			Number: v,
-			Count:  num,
+			Count:  0,
 		}
 		err = Config.DB.Create(&musicD).Error
 		if err != nil {
@@ -479,12 +485,12 @@ func MusicListRankCount(id uint, y string, m string, w string, d string, v strin
 	var musicListM MusicListRankMonth
 	var musicListW MusicListRankWeek
 	var musicListD MusicListRankDay
-	err = Config.DB.Where("id = ? and year = ?", id, y).Model(&musicListY).Error
+	err = Config.DB.Where("id = ? and year = ?", id, y).First(&musicListY).Error
 	if err == gorm.ErrRecordNotFound || musicListY.Id == 0 {
 		musicListY = MusicListRankYear{
 			Id:    id,
 			Year:  y,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicListY).Error
 		if err != nil {
@@ -495,13 +501,13 @@ func MusicListRankCount(id uint, y string, m string, w string, d string, v strin
 	if err != nil {
 		log.Println("增加年记录数据失败:", err, "y", y, "musicListId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ?", id, y, m).Model(&musicListM).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ?", id, y, m).First(&musicListM).Error
 	if err == gorm.ErrRecordNotFound || musicListM.Id == 0 {
 		musicListM = MusicListRankMonth{
 			Id:    id,
 			Year:  y,
 			Month: m,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicListM).Error
 		if err != nil {
@@ -512,14 +518,14 @@ func MusicListRankCount(id uint, y string, m string, w string, d string, v strin
 	if err != nil {
 		log.Println("增加年月记录数据失败:", err, "y", y, "m", m, "musicListId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ?", id, y, m, w).Model(&musicListW).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ?", id, y, m, w).First(&musicListW).Error
 	if err == gorm.ErrRecordNotFound || musicListW.Id == 0 {
 		musicListW = MusicListRankWeek{
 			Id:    id,
 			Year:  y,
 			Month: m,
 			Week:  w,
-			Count: num,
+			Count: 0,
 		}
 		err = Config.DB.Create(&musicListW).Error
 		if err != nil {
@@ -530,7 +536,7 @@ func MusicListRankCount(id uint, y string, m string, w string, d string, v strin
 	if err != nil {
 		log.Println("增加年月周记录数据失败:", err, "y", y, "m", m, "w", w, "musicListId:", id, "count:", num)
 	}
-	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ? and day = ?", id, y, m, w, d).Model(&musicListD).Error
+	err = Config.DB.Where("id = ? and year = ? and month = ? and week = ? and day = ?", id, y, m, w, d).First(&musicListD).Error
 	if err == gorm.ErrRecordNotFound || musicListD.Id == 0 {
 		musicListD = MusicListRankDay{
 			Id:     id,
@@ -539,7 +545,7 @@ func MusicListRankCount(id uint, y string, m string, w string, d string, v strin
 			Week:   w,
 			Day:    d,
 			Number: v,
-			Count:  num,
+			Count:  0,
 		}
 		err = Config.DB.Create(&musicListD).Error
 		if err != nil {

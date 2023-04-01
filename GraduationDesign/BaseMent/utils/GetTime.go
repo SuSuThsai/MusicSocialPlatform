@@ -64,8 +64,10 @@ func Explain() {
 	//
 	//每年三月的星期四的下午14:10和14:40:  00 10,40 14 ? 3 4
 }
+
 func ScheduledUpdateTask(a func(), spec string) {
-	crontab := cron.New(cron.WithSeconds())
+	data, _ := time.LoadLocation("Asia/Shanghai")
+	crontab := cron.New(cron.WithSeconds(), cron.WithLocation(data))
 	crontab.AddFunc(spec, a)
 	crontab.Start()
 	defer crontab.Stop()

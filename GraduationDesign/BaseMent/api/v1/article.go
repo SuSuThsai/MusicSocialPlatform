@@ -453,13 +453,13 @@ func SearchTopics(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	title := c.Query("title")
-	//switch {
-	//case pageSize <= 0:
-	//	pageSize = 10
-	//}
-	//if pageNum == 0 {
-	//	pageNum = 1
-	//}
+	switch {
+	case pageSize <= 0:
+		pageSize = 10
+	}
+	if pageNum == 0 {
+		pageNum = 1
+	}
 	articles, code, total := Model.SearchTopics(title, pageSize, pageNum)
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
@@ -482,13 +482,13 @@ func SearchMusic(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	pageNum, _ := strconv.Atoi(c.Query("pageNum"))
 	title := c.Query("title")
-	//switch {
-	//case pageSize <= 0:
-	//	pageSize = 10
-	//}
-	//if pageNum == 0 {
-	//	pageNum = 1
-	//}
+	switch {
+	case pageSize <= 0:
+		pageSize = 10
+	}
+	if pageNum == 0 {
+		pageNum = 1
+	}
 	musics, code, total := Model.SearchMusics(title, pageSize, pageNum)
 	var data3 [][]Model.MusicTopic
 	for i := 0; i < len(musics); i++ {

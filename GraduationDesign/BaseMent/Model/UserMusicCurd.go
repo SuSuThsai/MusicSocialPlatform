@@ -298,8 +298,12 @@ func EditMusicList(id uint, data *MusicList) int {
 func SearchMusicLists(Name string, pageSize int, pageNum int) ([]MusicList, int, int64) {
 	var musicList []MusicList
 	var total int64
-	err = Config.DB.Order("created_at DESC").Where("l_name LIKE ?",
-		"%"+Name+"%").Find(&musicList).Count(&total).Error
+	if Name != "" {
+		err = Config.DB.Order("created_at DESC").Limit(pageSize).Offset((pageNum-1)*pageSize).Where("l_name LIKE ?",
+			"%"+Name+"%").Find(&musicList).Count(&total).Error
+	} else {
+		err = Config.DB.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("created_at DESC").Find(&musicList).Count(&total).Error
+	}
 	//err = Config.DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").Where("l_name LIKE ?",
 	//	"%"+Name+"%").Find(&musicList).Count(&total).Error
 	if err != nil {

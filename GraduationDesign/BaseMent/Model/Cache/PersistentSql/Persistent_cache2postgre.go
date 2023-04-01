@@ -364,13 +364,15 @@ func (q *QueueForTime) callback(idStr string) error {
 			w := data[2]
 			d := utils.GetCNTimeWeek(data[3])
 			number := data[4]
-			id := data[5]
+			id := strings.Trim(data[5], " ")
 			count := data[6][:len(data[6])-1]
 			id1, _ := strconv.Atoi(id)
 			count1, _ := strconv.Atoi(count)
-			code := Model.MusicRankCount(uint(id1), y, m, w, d, number, count1)
-			if code == utils.ERROR {
-				log.Println("MusicRankCount persistent fail", code, "y", y, "m", m, "w", w, "d", d)
+			if id1 > 0 && count1 > 0 {
+				code := Model.MusicRankCount(uint(id1), y, m, w, d, number, count1)
+				if code == utils.ERROR {
+					log.Println("MusicRankCount persistent fail", code, "y", y, "m", m, "w", w, "d", d)
+				}
 			}
 		case 'd':
 			data := strings.Split(payload, " ")
@@ -379,13 +381,15 @@ func (q *QueueForTime) callback(idStr string) error {
 			w := data[2]
 			d := utils.GetCNTimeWeek(data[3])
 			number := data[4]
-			id := data[5]
+			id := strings.Trim(data[5], " ")
 			count := data[6][:len(data[6])-1]
 			id1, _ := strconv.Atoi(id)
 			count1, _ := strconv.Atoi(count)
-			code := Model.MusicListRankCount(uint(id1), y, m, w, d, number, count1)
-			if code == utils.ERROR {
-				log.Println("MusicListRankCount persistent fail", code, "y", y, "m", m, "w", w, "d", d)
+			if id1 > 0 && count1 > 0 {
+				code := Model.MusicListRankCount(uint(id1), y, m, w, d, number, count1)
+				if code == utils.ERROR {
+					log.Println("MusicListRankCount persistent fail", code, "y", y, "m", m, "w", w, "d", d)
+				}
 			}
 		case 'e':
 			data := strings.Split(payload, " ")
