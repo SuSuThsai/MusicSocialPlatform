@@ -158,8 +158,12 @@ func EditArticlePicture(id uint, ArticlePicture string) int {
 func ScheduledArticleTask() {
 	spec := "0 0 3 1 * ?"
 	spec1 := "0 0 2 * * ?"
-	utils.ScheduledUpdateTask(ClearTheTopicStore, spec)
-	utils.ScheduledUpdateTask(CountTopics, spec1)
+	utils.ScheduledUpdateTask(func() {
+		ClearTheTopicStore()
+	}, spec)
+	utils.ScheduledUpdateTask(func() {
+		CountTopics()
+	}, spec1)
 }
 
 func GetTheTopicList() ([]Topic, int64) {

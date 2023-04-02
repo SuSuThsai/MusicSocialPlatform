@@ -177,7 +177,7 @@ func GetUserMusicListened(userId string) ([]UserListenMusicCount, []Music, int) 
 		Config.DB.Where("id = ?", data[i].MusicId).First(&data3)
 		data2 = append(data2, data3)
 	}
-	err = Config.DB.Where("user_id = ?", userId).Find(&data).Error
+	//err = Config.DB.Where("user_id = ?", userId).Find(&data).Error
 	return data, data2, utils.SUCCESS
 }
 
