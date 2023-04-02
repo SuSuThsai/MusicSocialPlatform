@@ -12,7 +12,7 @@ import (
 )
 
 func Logger() gin.HandlerFunc {
-	filePath := "log/log"
+	filePath := "BaseMent/log/log"
 	//linkName := "latest_log.log"
 	src, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {

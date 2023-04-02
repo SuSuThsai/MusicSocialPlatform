@@ -69,7 +69,7 @@ func ScheduledUpdateTask(a func(), spec string) {
 	data, _ := time.LoadLocation("Asia/Shanghai")
 	crontab := cron.New(cron.WithSeconds(), cron.WithLocation(data))
 	crontab.AddFunc(spec, a)
-	crontab.Start()
+	go crontab.Start()
 	defer crontab.Stop()
 }
 

@@ -4,6 +4,7 @@ import (
 	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/utils"
 	"encoding/base64"
+	"fmt"
 	"golang.org/x/crypto/scrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -144,13 +145,14 @@ func GetUserCommandMusicCount(userId string, musicId uint) int {
 	y1, w1 := time.Now().ISOWeek()
 	w := strconv.Itoa(w1)
 	y := strconv.Itoa(y1)
-	err = Config.DB.Where("user_id = ?", userId).Find(&data2).Error
+	err = Config.DB.Where("user_id = ? and music_id = ?", userId, musicId).Find(&data2).Error
 	if data2.IsListen == 0 || err == gorm.ErrRecordNotFound {
 		data2.UserId = userId
 		data2.MusicId = musicId
 		data2.IsListen = 1
 		Config.DB.Create(&data2)
 		err = Config.DB.Where("user_id = ? and year = ? and month = ? and week = ? and day = ?", userId, y, m, w, d).Find(&data).Error
+		fmt.Println("222222", data.UserId)
 		if data.UserId == "" || err == gorm.ErrRecordNotFound {
 			data.UserId = userId
 			data.Year = y

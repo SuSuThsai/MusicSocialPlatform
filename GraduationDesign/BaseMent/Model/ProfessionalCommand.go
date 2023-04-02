@@ -27,11 +27,12 @@ func GetAUserCommandMusic30(userId string) []Music {
 		similarities = append(similarities, similarity)
 	}
 	var recommendedMusic []Music
+	flag1 := make(map[uint]bool)
 	sort.Slice(similarities, func(i, j int) bool {
 		return similarities[i] > similarities[j]
 	})
 	for i, similarity := range similarities {
-		if similarity > 0.5 { // threshold for similarity
+		if similarity > 0 { // threshold for similarity
 			for _, musicType := range allUserHabbity[i] {
 				var music []UserListenMusicCount
 				Config.DB.Where("user_id = ?", musicType.UserId).Order("listen_count DESC").Limit(100).Find(&music)
@@ -41,7 +42,10 @@ func GetAUserCommandMusic30(userId string) []Music {
 					for _, topic := range musicTopic {
 						if topic.Tip == musicType.Habits {
 							a, _ := GetAMusic(data.MusicId)
-							recommendedMusic = append(recommendedMusic, a)
+							if !flag1[a.Id] {
+								recommendedMusic = append(recommendedMusic, a)
+								flag1[a.Id] = true
+							}
 						}
 						//if len(recommendedMusic) > 30 {
 						//	return recommendedMusic
@@ -84,9 +88,13 @@ func GetAUserCommandMusic30(userId string) []Music {
 		})
 	}
 	var result []Music
+	flag2 := make(map[uint]bool)
 	for i := 0; i < len(countPic); i++ {
 		for j := 0; j < len(countPic[i]); j++ {
-			result = append(result, countPic[i][j].music)
+			if !flag2[countPic[i][j].music.Id] {
+				result = append(result, countPic[i][j].music)
+				flag2[countPic[i][j].music.Id] = true
+			}
 			if len(result) > 30 {
 				return result
 			}

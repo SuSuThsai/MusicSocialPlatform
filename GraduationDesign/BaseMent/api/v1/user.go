@@ -317,7 +317,21 @@ func CheckUserName(c *gin.Context) {
 		maps["concerns"] = len(data3[i])
 		maps["follows"] = len(data4[i])
 		maps["isconcern"] = data5[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
+		x1 := Model.GetUserTypeListened(data[i].UserId)
+		if len(x1) > 4 {
+			x1 = x1[:4]
+		}
+		var y []string
+		for i1 := 0; i1 < len(x1); i1++ {
+			a1 := x1[i1].Habits
+			b := strings.Trim(a1, "0%")
+			f := strings.Trim(b, "25%")
+			d := strings.Trim(f, "50%")
+			e := strings.Trim(d, "75%")
+			x1[i1].Habits = strings.Trim(e, "100%")
+			y = append(y, x1[i1].Habits)
+		}
+		maps["works"] = y
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -356,7 +370,21 @@ func GetFollows(c *gin.Context) {
 		maps["background"] = data2[i].Background
 		maps["concerns"] = data3[i]
 		maps["follows"] = data4[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
+		x1 := Model.GetUserTypeListened(data[i].UserId)
+		if len(x1) > 4 {
+			x1 = x1[:4]
+		}
+		var y []string
+		for i1 := 0; i1 < len(x1); i1++ {
+			a1 := x1[i1].Habits
+			b := strings.Trim(a1, "0%")
+			f := strings.Trim(b, "25%")
+			d := strings.Trim(f, "50%")
+			e := strings.Trim(d, "75%")
+			x1[i1].Habits = strings.Trim(e, "100%")
+			y = append(y, x1[i1].Habits)
+		}
+		maps["works"] = y
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -392,7 +420,21 @@ func GetConcern(c *gin.Context) {
 		maps["background"] = data2[i].Background
 		maps["concerns"] = data3[i]
 		maps["follows"] = data4[i]
-		maps["works"], _ = Model.CheckUserHabitty(data[i].UserId)
+		x1 := Model.GetUserTypeListened(data[i].UserId)
+		if len(x1) > 4 {
+			x1 = x1[:4]
+		}
+		var y []string
+		for i1 := 0; i1 < len(x1); i1++ {
+			a1 := x1[i1].Habits
+			b := strings.Trim(a1, "0%")
+			f := strings.Trim(b, "25%")
+			d := strings.Trim(f, "50%")
+			e := strings.Trim(d, "75%")
+			x1[i1].Habits = strings.Trim(e, "100%")
+			y = append(y, x1[i1].Habits)
+		}
+		maps["works"] = y
 		mapss = append(mapss, maps)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -423,11 +465,18 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			data = musics1
 		} else {
 			musics := Model.GetAUserCommandMusic30(userId)
+			flag := make(map[uint]bool)
+			for i := 0; i < len(musics); i++ {
+				flag[musics[i].Id] = true
+			}
 			//musics, _ := Model.SearchMusicsProfessional(b)
 			if len(musics) < 30 {
 				musics3, _, _ := Cache.GetACacheMusicRankWeek()
 				for _, music := range musics3 {
-					musics = append(musics, music)
+					if !flag[music.Id] {
+						musics = append(musics, music)
+						flag[music.Id] = true
+					}
 					if len(musics) >= 30 {
 						break
 					}
