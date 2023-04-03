@@ -20,6 +20,7 @@ var SftpClient *sftp.Client
 var FileRpc *grpc.ClientConn
 var FileRpc2 *grpc.ClientConn
 var Identify string
+var GlobalUserCommandListen map[string]map[uint]bool
 
 //var NowUser *middleware.Claims
 
@@ -104,8 +105,13 @@ type SFtp struct {
 	Port     string
 }
 
+func InitGlobalUserCommandListen() {
+	GlobalUserCommandListen = make(map[string]map[uint]bool)
+}
+
 func InitsSQL() {
 	InitsConfig()
+	InitGlobalUserCommandListen()
 	InitsPSQL()
 	InitRedis()
 	InitTencentCos()

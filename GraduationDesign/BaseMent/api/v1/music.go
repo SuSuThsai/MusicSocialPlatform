@@ -3,6 +3,7 @@ package v1
 import (
 	"GraduationDesign/BaseMent/Cloud/CosCloud"
 	"GraduationDesign/BaseMent/Cloud/FtpAndSsh"
+	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/Grpc"
 	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/Model/Cache"
@@ -101,6 +102,9 @@ func GetUserCommandMusicCount(c *gin.Context) {
 func UserSongListen(c *gin.Context) {
 	MusicId, _ := strconv.Atoi(c.Param("id"))
 	userId := c.GetString("user_id")
+	if Config.GlobalUserCommandListen[userId][uint(MusicId)] == true {
+		Model.GetUserCommandMusicCount(userId, uint(MusicId))
+	}
 	code := Model.CountUserMusicListened(userId, uint(MusicId))
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{

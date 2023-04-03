@@ -2,6 +2,7 @@ package v1
 
 import (
 	"GraduationDesign/BaseMent/Cloud/CosCloud"
+	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/Model/Cache"
 	"GraduationDesign/BaseMent/utils"
@@ -488,6 +489,10 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 	}
 	var data3 [][]Model.MusicTopic
 	for i := 0; i < len(data); i++ {
+		if Config.GlobalUserCommandListen[userId] == nil {
+			Config.GlobalUserCommandListen[userId] = make(map[uint]bool)
+		}
+		Config.GlobalUserCommandListen[userId][data[i].Id] = true
 		data3 = append(data3, Model.GetMusicHabit(data[i].Id, ""))
 	}
 	c.JSON(http.StatusOK, gin.H{

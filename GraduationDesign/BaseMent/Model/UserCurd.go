@@ -4,7 +4,6 @@ import (
 	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/utils"
 	"encoding/base64"
-	"fmt"
 	"golang.org/x/crypto/scrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -152,7 +151,6 @@ func GetUserCommandMusicCount(userId string, musicId uint) int {
 		data2.IsListen = 1
 		Config.DB.Create(&data2)
 		err = Config.DB.Where("user_id = ? and year = ? and month = ? and week = ? and day = ?", userId, y, m, w, d).Find(&data).Error
-		fmt.Println("222222", data.UserId)
 		if data.UserId == "" || err == gorm.ErrRecordNotFound {
 			data.UserId = userId
 			data.Year = y

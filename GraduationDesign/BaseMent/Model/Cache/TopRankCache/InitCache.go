@@ -1,6 +1,7 @@
 package TopRankCache
 
 import (
+	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/Model/Cache"
 	"GraduationDesign/BaseMent/utils"
@@ -16,6 +17,7 @@ func InitTopRankCacheBasement() {
 		Cache.UpdateMusicRankDay()
 	}, specD)
 	utils.ScheduledUpdateTask(func() {
+		Config.InitGlobalUserCommandListen()
 		Model.DeleteCommandMusicIsListen()
 	}, specD)
 	utils.ScheduledUpdateTask(func() {
