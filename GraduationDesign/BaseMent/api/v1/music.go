@@ -102,7 +102,7 @@ func GetUserCommandMusicCount(c *gin.Context) {
 func UserSongListen(c *gin.Context) {
 	MusicId, _ := strconv.Atoi(c.Param("id"))
 	userId := c.GetString("user_id")
-	if Config.GlobalUserCommandListen[userId][uint(MusicId)] == true {
+	if Config.GlobalUserCommandListen[userId] != nil && Config.GlobalUserCommandListen[userId][uint(MusicId)] == true {
 		Model.GetUserCommandMusicCount(userId, uint(MusicId))
 	}
 	code := Model.CountUserMusicListened(userId, uint(MusicId))
