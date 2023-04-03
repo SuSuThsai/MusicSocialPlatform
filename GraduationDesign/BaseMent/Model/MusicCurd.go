@@ -3,7 +3,6 @@ package Model
 import (
 	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/utils"
-	"fmt"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 	"log"
@@ -267,7 +266,6 @@ func GetCommandMusicDays(userId string, title int) ([]Music, int) {
 	var data2 []CommandMusicCount
 	Config.DB.Where("user_id =  ? and year = ? and month = ? and week = ? and day = ? and number = ?",
 		userId, y, m, w, d, n).Find(&data2)
-	fmt.Println("3333", len(data2), title)
 	var result []Music
 	for i := 0; i < len(data2); i++ {
 		a, _ := GetAMusic(data2[i].MusicId)

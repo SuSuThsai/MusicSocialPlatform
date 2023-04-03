@@ -456,7 +456,12 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			b = append(b, a[i].Habits)
 		}
 		if len(b) == 0 {
-			musics1, code, _ := Cache.GetACacheMusicRankWeek()
+			musics1, code, _ := Cache.GetACacheMusicRankMonth()
+			if code == utils.ERROR || len(musics1) <= 2 {
+				y, _ := time.Now().ISOWeek()
+				m := utils.GetCNTimeMonth(time.Now().Month().String())
+				musics1, _, _ = Model.GetMusicRankMonth(y, m)
+			}
 			if code == utils.ERROR || len(musics1) <= 2 {
 				y, w1 := time.Now().ISOWeek()
 				m := utils.GetCNTimeMonth(time.Now().Month().String())
@@ -473,6 +478,11 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 			//musics, _ := Model.SearchMusicsProfessional(b)
 			if len(musics) < 30 {
 				musics3, _, _ := Cache.GetACacheMusicRankWeek()
+				if code == utils.ERROR || len(musics3) <= 2 {
+					y, _ := time.Now().ISOWeek()
+					m := utils.GetCNTimeMonth(time.Now().Month().String())
+					musics3, _, _ = Model.GetMusicRankMonth(y, m)
+				}
 				for _, music := range musics3 {
 					if !flag[music.Id] {
 						musics = append(musics, music)
