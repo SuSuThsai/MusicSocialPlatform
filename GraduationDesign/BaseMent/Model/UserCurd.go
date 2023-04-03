@@ -173,7 +173,7 @@ func GetUserCommandMusicCount(userId string, musicId uint) int {
 func GetUserMusicListened(userId string) ([]UserListenMusicCount, []Music, int) {
 	var data []UserListenMusicCount
 	var data2 []Music
-	err = Config.DB.Where("user_id = ?", userId).Limit(30).Order("updated_at DESC").Find(&data).Error
+	err = Config.DB.Where("user_id = ?", userId).Limit(100).Order("updated_at DESC").Find(&data).Error
 	for i := 0; i < len(data); i++ {
 		var data3 Music
 		Config.DB.Where("id = ?", data[i].MusicId).First(&data3)

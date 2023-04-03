@@ -32,7 +32,7 @@ func GetAUserCommandMusic30(userId string) []Music {
 		return similarities[i] > similarities[j]
 	})
 	for i, similarity := range similarities {
-		if similarity > 0 { // threshold for similarity
+		if similarity > 0.3 { // threshold for similarity
 			for _, musicType := range allUserHabbity[i] {
 				var music []UserListenMusicCount
 				Config.DB.Where("user_id = ?", musicType.UserId).Order("listen_count DESC").Limit(100).Find(&music)
