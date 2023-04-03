@@ -7,6 +7,7 @@ import (
 	"GraduationDesign/BaseMent/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -307,6 +308,10 @@ func GetUserConcernArticles(c *gin.Context) {
 		articles = append(articles, article...)
 		total += total1
 	}
+	//对发表时间进行排序
+	sort.Slice(articles, func(i, j int) bool {
+		return articles[i].UpdatedAt.After(articles[j].UpdatedAt)
+	})
 	if code == utils.SUCCESS {
 		c.JSON(http.StatusOK, gin.H{
 			"status":   code,
