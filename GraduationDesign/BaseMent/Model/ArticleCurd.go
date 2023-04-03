@@ -5,6 +5,7 @@ import (
 	"GraduationDesign/BaseMent/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"strings"
 	time2 "time"
 )
 
@@ -188,15 +189,18 @@ func CountTopics() {
 	for _, article := range articles {
 		var top Topic
 		if article.Topic1 != "" {
+			article.Topic1 = strings.Trim(article.Topic1, " ")
 			Config.DB.Select("t_name = ?", article.Topic1).First(&top)
 			UpdateTopic(top.TName, article.CommentCount, article.ReadCount)
 		}
 		if article.Topic2 != "" {
+			article.Topic2 = strings.Trim(article.Topic1, " ")
 			Config.DB.Select("t_name = ?", article.Topic2).First(&top)
 			UpdateTopic(top.TName, article.CommentCount, article.ReadCount)
 		}
-		if article.Topic2 != "" {
-			Config.DB.Select("t_name = ?", article.Topic2).First(&top)
+		if article.Topic3 != "" {
+			article.Topic3 = strings.Trim(article.Topic1, " ")
+			Config.DB.Select("t_name = ?", article.Topic3).First(&top)
 			UpdateTopic(top.TName, article.CommentCount, article.ReadCount)
 		}
 	}

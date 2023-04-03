@@ -130,6 +130,9 @@ func CheckCacheMusicIsLike(MusicId uint, userId uint) bool {
 }
 
 func UpdateCaCheMusicLike(musicId uint, userId uint) int {
+	key := utils.GetCacheNameMusicLike(musicId, userId)
+	data1, _ := json.Marshal(true)
+	_ = Config.DBR.Set(c, key, string(data1), 2*BasementMinute).Err()
 	a, b := strconv.Itoa(int(musicId)), strconv.Itoa(int(userId))
 	id := a + " " + b + "2"
 	err := PersistentSql.CaCheMusicLike.SendScheduleMsg(id, time.Now().Add(0), PersistentSql.WithRetryCount(2))
@@ -140,6 +143,9 @@ func UpdateCaCheMusicLike(musicId uint, userId uint) int {
 }
 
 func UpdateCaCheMusicDisLike(musicId uint, userId uint) int {
+	key := utils.GetCacheNameMusicLike(musicId, userId)
+	data1, _ := json.Marshal(false)
+	_ = Config.DBR.Set(c, key, string(data1), 2*BasementMinute).Err()
 	a, b := strconv.Itoa(int(musicId)), strconv.Itoa(int(userId))
 	id := a + " " + b + "3"
 	err := PersistentSql.CaCheMusicLike.SendScheduleMsg(id, time.Now().Add(0), PersistentSql.WithRetryCount(2))
@@ -340,6 +346,9 @@ func UpdateCacheMusicListIsLike(MusicListId uint, userId uint) bool {
 }
 
 func UpdateCacheMusicListLike(MusicListId uint, userId uint) int {
+	key1 := utils.GetCacheNameMusicListLike(MusicListId, userId)
+	data1, _ := json.Marshal(true)
+	_ = Config.DBR.Set(c, key1, string(data1), 2*BasementMinute).Err()
 	key := strconv.Itoa(int(MusicListId)) + " " + strconv.Itoa(int(userId)) + "f"
 	err := PersistentSql.CaCheMusicListLike.SendScheduleMsg(key, time.Now().Add(0), PersistentSql.WithRetryCount(2))
 	if err != nil {
@@ -349,6 +358,9 @@ func UpdateCacheMusicListLike(MusicListId uint, userId uint) int {
 }
 
 func UpdateCacheMusicListDisLike(MusicListId uint, userId uint) int {
+	key1 := utils.GetCacheNameMusicListLike(MusicListId, userId)
+	data1, _ := json.Marshal(false)
+	_ = Config.DBR.Set(c, key1, string(data1), 2*BasementMinute).Err()
 	key := strconv.Itoa(int(MusicListId)) + " " + strconv.Itoa(int(userId)) + "g"
 	err := PersistentSql.CaCheMusicListLike.SendScheduleMsg(key, time.Now().Add(0), PersistentSql.WithRetryCount(2))
 	if err != nil {

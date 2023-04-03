@@ -140,7 +140,7 @@ type FollowList struct {
 
 type ConcernList struct {
 	gorm.Model
-	UserId    string `gorm:"type:varchar(20);Index" json:"user_id"`
+	UserId    string `gorm:"type:varchar(30);Index" json:"user_id"`
 	ConcernId string `gorm:"type:varchar(20);" json:"concern_id"`
 	Like      bool   `gorm:"type:bool" json:"like"`
 }

@@ -16,14 +16,14 @@ func GetAUserCommandMusic30(userId string) []Music {
 			continue
 		}
 		var data []UserListenTypeCount
-		Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&data)
+		Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", users[i].UserId).Order("listen_count DESC").Find(&data)
 		allUserHabbity = append(allUserHabbity, data)
 	}
 
 	Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity)
 	var similarities []float64
 	for _, userHabbity1 := range allUserHabbity {
-		similarity := calculateSimilarity(userHabbity, userHabbity1)
+		similarity := calculateSimilarity2(userHabbity, userHabbity1)
 		similarities = append(similarities, similarity)
 	}
 	var recommendedMusic []Music
