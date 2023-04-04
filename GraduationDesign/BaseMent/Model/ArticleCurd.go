@@ -288,7 +288,7 @@ func SearchActivities(title string, pageSize int, pageNum int) ([]Article, int, 
 
 // SearchArticleDays Search The activities
 func SearchArticleDays(title int, pageSize int, pageNum int) ([]Article, int, int64) {
-	startOfDay := time2.Now().AddDate(0, 0, -title).Truncate(24 * time2.Hour)
+	startOfDay := time2.Now().UTC().AddDate(0, 0, -title).Truncate(24 * time2.Hour)
 	endOfDay := startOfDay.Add(24 * time2.Hour)
 	var articles []Article
 	var total int64
