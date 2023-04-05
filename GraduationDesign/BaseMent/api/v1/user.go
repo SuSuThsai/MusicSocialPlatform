@@ -462,13 +462,11 @@ func GetAUserProfessionalMusics(c *gin.Context) {
 				m := utils.GetCNTimeMonth(time.Now().Month().String())
 				musics1, _, _ = Model.GetMusicRankMonth(y, m)
 			}
-			if code == utils.ERROR || len(musics1) <= 2 {
-				y, w1 := time.Now().ISOWeek()
-				m := utils.GetCNTimeMonth(time.Now().Month().String())
-				musics1, code, _ = Model.GetMusicRankWeek(y, m, w1)
-			}
 			code = Model.CountCommandMusic(musics1, userId)
 			data = musics1
+			if len(data) >= 30 {
+				data = data[:30]
+			}
 		} else {
 			musics := Model.GetAUserCommandMusic30(userId)
 			flag := make(map[uint]bool)
