@@ -8,7 +8,11 @@ import (
 
 func GetAUserCommandMusic30(userId string) []Music {
 	var userHabbity []UserListenTypeCount
-	var allUserHabbity [][]UserListenTypeCount
+	type X struct {
+		allUserHabbity []UserListenTypeCount
+		userid         int
+	}
+	var allUserHabbity []X
 	var users []User
 	Config.DB.Model(&User{}).Find(&users)
 	for i := 0; i < len(users); i++ {
@@ -17,35 +21,42 @@ func GetAUserCommandMusic30(userId string) []Music {
 		}
 		var data []UserListenTypeCount
 		Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", users[i].UserId).Order("listen_count DESC").Find(&data)
-		allUserHabbity = append(allUserHabbity, data)
+		allUserHabbity = append(allUserHabbity, X{allUserHabbity: data, userid: i})
 	}
 
 	Config.DB.Model(&UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity)
-	var similarities []float64
-	for _, userHabbity1 := range allUserHabbity {
-		similarity := calculateSimilarity2(userHabbity, userHabbity1)
-		similarities = append(similarities, similarity)
+	type Y struct {
+		similarities float64
+		userid       int
 	}
-	var recommendedMusic []Music
+	var similarities []Y
+	for _, userHabbity1 := range allUserHabbity {
+		similarity := calculateSimilarity2(userHabbity, userHabbity1.allUserHabbity)
+		similarities = append(similarities, Y{similarities: similarity, userid: userHabbity1.userid})
+	}
+	var recommendedMusic []uint
 	flag1 := make(map[uint]bool)
 	sort.Slice(similarities, func(i, j int) bool {
-		return similarities[i] > similarities[j]
+		return similarities[i].similarities > similarities[j].similarities
 	})
-	for i, similarity := range similarities {
-		if similarity > 0.3 { // threshold for similarity
-			for _, musicType := range allUserHabbity[i] {
-				var music []UserListenMusicCount
-				Config.DB.Where("user_id = ?", musicType.UserId).Order("listen_count DESC").Limit(100).Find(&music)
-				for _, data := range music {
-					var musicTopic []MusicTopic
-					Config.DB.Where("id = ?", data.MusicId).Limit(10).Find(&musicTopic)
+	for _, similarity := range similarities {
+		if similarity.similarities > 0.3 { // threshold for similarity
+			//fmt.Println(similarity.userid, "6666")
+			var music []UserListenMusicCount
+			Config.DB.Where("user_id = ?", users[similarity.userid].UserId).Order("listen_count DESC").Limit(100).Find(&music)
+			//fmt.Println(music, "7777")
+			for _, data := range music {
+				var musicTopic []MusicTopic
+				Config.DB.Where("id = ?", data.MusicId).Limit(10).Find(&musicTopic)
+				for _, musicType := range userHabbity {
 					for _, topic := range musicTopic {
 						if topic.Tip == musicType.Habits {
-							a, _ := GetAMusic(data.MusicId)
-							if !flag1[a.Id] {
-								recommendedMusic = append(recommendedMusic, a)
-								flag1[a.Id] = true
+							//a, _ := GetAMusic(data.MusicId)
+							if !flag1[data.MusicId] {
+								recommendedMusic = append(recommendedMusic, data.MusicId)
+								flag1[data.MusicId] = true
 							}
+							break
 						}
 						//if len(recommendedMusic) > 30 {
 						//	return recommendedMusic
@@ -55,9 +66,7 @@ func GetAUserCommandMusic30(userId string) []Music {
 			}
 		}
 	}
-	if len(recommendedMusic) <= 30 {
-		return recommendedMusic
-	}
+	//fmt.Println(len(recommendedMusic), recommendedMusic, "222222")
 	//TODO 改变推荐逻辑 改为优先级推荐
 	var userMusicListenCount []UserListenMusicCount
 	Config.DB.Model(&UserListenMusicCount{}).Where("user_id = ?", userId).Find(&userMusicListenCount)
@@ -67,19 +76,19 @@ func GetAUserCommandMusic30(userId string) []Music {
 	}
 	//三类 <5 5~10 10~20 >20
 	type musicCount struct {
-		music Music
+		music uint
 		num   int
 	}
 	countPic := make([][]musicCount, 4)
 	for i := 0; i < len(recommendedMusic); i++ {
-		if flag[int(recommendedMusic[i].Id)] < 5 {
-			countPic[0] = append(countPic[0], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
-		} else if 5 <= flag[int(recommendedMusic[i].Id)] && flag[int(recommendedMusic[i].Id)] < 10 {
-			countPic[1] = append(countPic[1], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
-		} else if 10 <= flag[int(recommendedMusic[i].Id)] && flag[int(recommendedMusic[i].Id)] < 20 {
-			countPic[2] = append(countPic[2], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+		if flag[int(recommendedMusic[i])] < 5 {
+			countPic[0] = append(countPic[0], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i])]})
+		} else if 5 <= flag[int(recommendedMusic[i])] && flag[int(recommendedMusic[i])] < 10 {
+			countPic[1] = append(countPic[1], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i])]})
+		} else if 10 <= flag[int(recommendedMusic[i])] && flag[int(recommendedMusic[i])] < 20 {
+			countPic[2] = append(countPic[2], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i])]})
 		} else {
-			countPic[3] = append(countPic[3], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i].Id)]})
+			countPic[3] = append(countPic[3], musicCount{music: recommendedMusic[i], num: flag[int(recommendedMusic[i])]})
 		}
 	}
 	for i := 0; i < len(countPic); i++ {
@@ -91,11 +100,12 @@ func GetAUserCommandMusic30(userId string) []Music {
 	flag2 := make(map[uint]bool)
 	for i := 0; i < len(countPic); i++ {
 		for j := 0; j < len(countPic[i]); j++ {
-			if !flag2[countPic[i][j].music.Id] {
-				result = append(result, countPic[i][j].music)
-				flag2[countPic[i][j].music.Id] = true
+			if !flag2[countPic[i][j].music] {
+				a, _ := GetAMusic(countPic[i][j].music)
+				result = append(result, a)
+				flag2[countPic[i][j].music] = true
 			}
-			if len(result) > 30 {
+			if len(result) >= 30 {
 				return result
 			}
 		}

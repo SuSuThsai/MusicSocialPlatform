@@ -22,7 +22,7 @@ type Music struct {
 }
 
 type MusicTopic struct {
-	Id   uint   `gorm:"not null" json:"id"`
+	Id   uint   `gorm:"index;not null" json:"id"`
 	Name string `gorm:"index;not null"json:"name"`
 	Tip  string `gorm:"index;not null"json:"tip"`
 }

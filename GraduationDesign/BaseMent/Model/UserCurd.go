@@ -134,7 +134,7 @@ func CountUserMusicListened(userId string, musicId uint) int {
 }
 
 func DeleteCommandMusicIsListen() {
-	Config.DB.Delete(&MusicCommandIsListen{})
+	Config.DB.Where("is_listen = 1").Delete(&MusicCommandIsListen{})
 }
 
 func GetUserCommandMusicCount(userId string, musicId uint) int {

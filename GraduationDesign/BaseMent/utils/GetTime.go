@@ -70,7 +70,7 @@ func ScheduledUpdateTask(a func(), spec string) {
 	crontab := cron.New(cron.WithSeconds(), cron.WithLocation(data))
 	crontab.AddFunc(spec, a)
 	go crontab.Start()
-	defer crontab.Stop()
+	//defer crontab.Stop()
 }
 
 func GetCNTimeWeek(data string) string {

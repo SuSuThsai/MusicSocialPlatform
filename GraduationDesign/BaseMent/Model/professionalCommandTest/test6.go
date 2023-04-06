@@ -3,39 +3,38 @@ package main
 import (
 	"GraduationDesign/BaseMent/Config"
 	"GraduationDesign/BaseMent/Model"
-	"fmt"
 	"math"
 )
 
 func main() {
 	Config.InitsConfig()
 	Config.InitsPSQL()
-	userId := "1906100044"
-	var userHabbity []Model.UserListenTypeCount
-	var allUserHabbity [][]Model.UserListenTypeCount
-	var users []Model.User
-	Config.DB.Model(&Model.User{}).Find(&users)
-	for i := 0; i < len(users); i++ {
-		if users[i].UserId == userId {
-			continue
-		}
-		fmt.Println(users[i].UserId)
-		var data []Model.UserListenTypeCount
-		Config.DB.Model(&Model.UserListenTypeCount{}).Where("user_id = ?", users[i].UserId).Order("listen_count DESC").Find(&data)
-		allUserHabbity = append(allUserHabbity, data)
-	}
-
-	Config.DB.Model(&Model.UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity)
-	var similarities []float64
-	var similarities2 []float64
-	for _, userHabbity1 := range allUserHabbity {
-		similarity := calculateSimilarity(userHabbity, userHabbity1)
-		similarity2 := calculateSimilarity2(userHabbity, userHabbity1)
-		similarities = append(similarities, similarity)
-		similarities2 = append(similarities2, similarity2)
-	}
-	fmt.Println("皮尔逊相关系数：", similarities)
-	fmt.Println("余弦相似度：", similarities2)
+	//userId := "1906100044"
+	//var userHabbity []Model.UserListenTypeCount
+	//var allUserHabbity [][]Model.UserListenTypeCount
+	//var users []Model.User
+	//Config.DB.Model(&Model.User{}).Find(&users)
+	//for i := 0; i < len(users); i++ {
+	//	if users[i].UserId == userId {
+	//		continue
+	//	}
+	//	fmt.Println(users[i].UserId)
+	//	var data []Model.UserListenTypeCount
+	//	Config.DB.Model(&Model.UserListenTypeCount{}).Where("user_id = ?", users[i].UserId).Order("listen_count DESC").Find(&data)
+	//	allUserHabbity = append(allUserHabbity, data)
+	//}
+	//
+	//Config.DB.Model(&Model.UserListenTypeCount{}).Where("user_id = ?", userId).Order("listen_count DESC").Find(&userHabbity)
+	//var similarities []float64
+	//var similarities2 []float64
+	//for _, userHabbity1 := range allUserHabbity {
+	//	similarity := calculateSimilarity(userHabbity, userHabbity1)
+	//	similarity2 := calculateSimilarity2(userHabbity, userHabbity1)
+	//	similarities = append(similarities, similarity)
+	//	similarities2 = append(similarities2, similarity2)
+	//}
+	//fmt.Println("皮尔逊相关系数：", similarities)
+	//fmt.Println("余弦相似度：", similarities2)
 }
 
 // 皮尔逊相关系数来计算用户之间的相似度
