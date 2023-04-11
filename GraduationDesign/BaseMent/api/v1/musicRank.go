@@ -174,17 +174,17 @@ func MusicListRankDayList(c *gin.Context) {
 func GetMusicListRankWeekList(c *gin.Context) {
 	musics, code, total := Cache.GetACacheMusicListRankWeek()
 	var data3 [][]Model.Tips
+	if code == utils.ERROR {
+		y, w1 := time.Now().ISOWeek()
+		m := utils.GetCNTimeMonth(time.Now().Month().String())
+		musics, code, total = Model.GetMusicListRankWeek(y, m, w1)
+	}
 	for i := 0; i < len(musics); i++ {
 		tips, _, _ := Model.GetUserMusicListTips(musics[i].ID)
 		if len(tips) > 5 {
 			tips = tips[:5]
 		}
 		data3 = append(data3, tips)
-	}
-	if code == utils.ERROR {
-		y, w1 := time.Now().ISOWeek()
-		m := utils.GetCNTimeMonth(time.Now().Month().String())
-		musics, code, total = Model.GetMusicListRankWeek(y, m, w1)
 	}
 	if code == utils.ERROR {
 		c.JSON(http.StatusInternalServerError, gin.H{

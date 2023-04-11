@@ -93,15 +93,17 @@ func GetMusicListRankWeek(y1 int, m string, week1 int) ([]MusicList, int, int64)
 	var result []MusicList
 	for i := 0; i < len(musics); i++ {
 		a, _ := FindAMusicList(musics[i].Id)
-		result = append(result, a)
+		if a.ID != 0 {
+			result = append(result, a)
+		}
 	}
-	return result, utils.SUCCESS, int64(len(musics))
+	return result, utils.SUCCESS, int64(len(result))
 }
 
 // GetMusicListRankMonth Get MusicList RankMonth
 func GetMusicListRankMonth(y1 int, m string) ([]MusicList, int, int64) {
 	y := strconv.Itoa(y1)
-	var musics []MusicRankMonth
+	var musics []MusicListRankMonth
 	err = Config.DB.Where("year = ? and month = ?", y, m).Limit(100).Order("count DESC").Find(&musics).Error
 	if err != nil {
 		return nil, utils.ERROR, 0
@@ -109,9 +111,11 @@ func GetMusicListRankMonth(y1 int, m string) ([]MusicList, int, int64) {
 	var result []MusicList
 	for i := 0; i < len(musics); i++ {
 		a, _ := FindAMusicList(musics[i].Id)
-		result = append(result, a)
+		if a.ID != 0 {
+			result = append(result, a)
+		}
 	}
-	return result, utils.SUCCESS, int64(len(musics))
+	return result, utils.SUCCESS, int64(len(result))
 }
 
 // GetMusicListRankYear Get MusicList RankYear
@@ -125,9 +129,11 @@ func GetMusicListRankYear(y1 int) ([]MusicList, int, int64) {
 	var result []MusicList
 	for i := 0; i < len(musics); i++ {
 		a, _ := FindAMusicList(musics[i].Id)
-		result = append(result, a)
+		if a.ID != 0 {
+			result = append(result, a)
+		}
 	}
-	return result, utils.SUCCESS, int64(len(musics))
+	return result, utils.SUCCESS, int64(len(result))
 }
 
 // GetAMusicListList Get A MusicListList
@@ -145,7 +151,9 @@ func GetAMusicListList(data []redis.Z) ([]MusicList, int, int64) {
 			log.Println("更新日派第", i, "名歌单失败", "musicId:", id)
 			continue
 		}
-		musicList = append(musicList, data1)
+		if data1.ID != 0 {
+			musicList = append(musicList, data1)
+		}
 	}
 	return musicList, utils.SUCCESS, int64(len(musicList))
 }

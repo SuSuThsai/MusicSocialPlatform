@@ -2,7 +2,6 @@ package main
 
 import (
 	"GraduationDesign/BaseMent/Config"
-	"GraduationDesign/BaseMent/Model"
 	"GraduationDesign/BaseMent/Model/Cache/PersistentSql"
 	"GraduationDesign/BaseMent/Model/Cache/TopRankCache"
 	"GraduationDesign/BaseMent/routes"
@@ -18,11 +17,13 @@ func main() {
 	//Config.DB.AutoMigrate(&Model.User{}, &Model.UserInfo{}, Model.UserListeningHabits{}, Model.MusicList{}, Model.Tips{}, Model.SongList{})
 	//Config.DB.AutoMigrate(&Model.MusicListLike{}, &Model.MusicLike{})
 	//Config.DB.AutoMigrate(&Model.FollowList{}, &Model.ConcernList{})
-	Config.DB.AutoMigrate(&Model.MusicTopic{})
 	//Config.DB.AutoMigrate(&Model.Article{}, &Model.Comment{}, &Model.MusicTopic{}, &Model.CommandMusicCount{}, &Model.CommandMusicListenCount{}, &Model.MusicCommandIsListen{})
+	//Config.DB.AutoMigrate(&Model.MusicTopic{})
 	PersistentSql.InitCache()
 	//Cache.UpdateMusicListRankDay()
 	//Cache.UpdateMusicRankDay()
 	TopRankCache.InitTopRankCacheBasement()
+	//Cache.PersistentMusicDayRank()
+	//Cache.PersistentMusicListDayRank()
 	routes.InitRoutes()
 }
