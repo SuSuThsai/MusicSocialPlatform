@@ -8,7 +8,7 @@ import (
 
 func InitRoutes() {
 	//debug 开发模式 release生产模式
-	gin.SetMode("debug")
+	gin.SetMode("release")
 	cod := gin.New()
 	cod.Use(middleware.Logger())
 	cod.Use(middleware.Cors())
